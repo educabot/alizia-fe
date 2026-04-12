@@ -8,6 +8,7 @@ import {
   useSubjectsQuery,
 } from '@/hooks/queries/useReferenceQueries';
 import { useCoordinationDocumentsQuery } from '@/hooks/queries/useCoordinationQueries';
+import { useNomenclature } from '@/hooks/useOrgConfig';
 import { Button } from '@/components/ui/button';
 import { DocumentCard } from '@/components/coordination/DocumentCard';
 import { LoadingOrb } from '@/components/ai/LoadingOrb';
@@ -21,6 +22,7 @@ export function Course() {
   const { data: courseSubjects = [] } = useCourseSubjectsQuery();
   const { data: areas = [] } = useAreasQuery();
   const { data: subjects = [] } = useSubjectsQuery();
+  const docPluralLabel = useNomenclature('coordination_document_plural');
   const { data: documents = [], isLoading } = useCoordinationDocumentsQuery();
 
   const course = courses.find((c) => c.id === courseId);
@@ -94,7 +96,7 @@ export function Course() {
             <div className='flex items-center justify-between mb-4'>
               <div className='flex items-center gap-2'>
                 <FileText className='text-[#10182B]' />
-                <h2 className='headline-emphasized text-[#10182B]'>Documentos de coordinación</h2>
+                <h2 className='headline-emphasized text-[#10182B]'>{docPluralLabel}</h2>
                 <span className='body-1-regular text-muted-foreground'>({courseDocuments.length})</span>
               </div>
               <Button

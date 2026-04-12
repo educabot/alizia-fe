@@ -2,7 +2,12 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, X, Share, CloudCheck, Clock, ArrowRight } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useLessonPlanQuery, teachingKeys } from '@/hooks/queries/useTeachingQueries';
+import {
+  useLessonPlanQuery,
+  useUpdateLessonPlanMutation,
+  useUpdateLessonPlanStatusMutation,
+  teachingKeys,
+} from '@/hooks/queries/useTeachingQueries';
 import { useActivitiesByMomentQuery } from '@/hooks/queries/useReferenceQueries';
 import { lessonPlansApi } from '@/services/api';
 import { ChatPanel } from '@/components/ai/ChatPanel';
@@ -20,6 +25,8 @@ export function TeacherLessonPlan() {
   const queryClient = useQueryClient();
   const { data: currentLessonPlan } = useLessonPlanQuery(planId);
   const { data: activitiesByMoment = { apertura: [], desarrollo: [], cierre: [] } } = useActivitiesByMomentQuery();
+  const updateMutation = useUpdateLessonPlanMutation();
+  const statusMutation = useUpdateLessonPlanStatusMutation();
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<{
@@ -83,28 +90,27 @@ export function TeacherLessonPlan() {
 
   const handlePublish = async () => {
     try {
-      await lessonPlansApi.updateStatus(planId, 'published');
-      await refetchPlan();
+      await statusMutation.mutateAsync({ id: planId, status: 'published' });
     } catch (_error) {}
   };
 
   // --- Content editing ---
   const handleSaveContent = async (mk: MomentKey, aid: number, newContent: string) => {
     if (!currentLessonPlan?.moments) return;
-    try {
-      const moments = { ...currentLessonPlan.moments };
-      const momentData = { ...moments[mk] };
-      const actContent = { ...(momentData.activityContent || {}) };
-      actContent[String(aid)] = newContent;
-      momentData.activityContent = actContent;
-      moments[mk] = momentData;
+    const moments = { ...currentLessonPlan.moments };
+    const momentData = { ...moments[mk] };
+    const actContent = { ...(momentData.activityContent || {}) };
+    actContent[String(aid)] = newContent;
+    momentData.activityContent = actContent;
+    moments[mk] = momentData;
 
-      await lessonPlansApi.update(planId, { moments });
-      // Optimistic update
-      queryClient.setQueryData<LessonPlan>(teachingKeys.lessonPlan(planId), {
-        ...currentLessonPlan,
-        moments,
-      });
+    // Optimistic update
+    queryClient.setQueryData<LessonPlan>(teachingKeys.lessonPlan(planId), {
+      ...currentLessonPlan,
+      moments,
+    });
+    try {
+      await updateMutation.mutateAsync({ id: planId, data: { moments } });
     } catch (_error) {}
   };
 

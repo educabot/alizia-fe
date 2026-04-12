@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowRight, X } from 'lucide-react';
 import { useActivitiesByMomentQuery, useFontsQuery } from '@/hooks/queries/useReferenceQueries';
+import { useCreateLessonPlanMutation } from '@/hooks/queries/useTeachingQueries';
 import { useConfigStore } from '@/store/configStore';
-import { lessonPlansApi } from '@/services/api';
 import { MomentEditor, validateMoments } from '@/components/teaching/MomentEditor';
 import { MomentsValidation } from '@/components/teaching/MomentsValidation';
 import { ResourceModeToggle } from '@/components/teaching/ResourceModeToggle';
@@ -31,7 +31,7 @@ export function TeacherPlanWizard() {
   });
   const [resourcesMode, setResourcesMode] = useState<ResourcesMode>('global');
   const [globalFontIds, setGlobalFontIds] = useState<number[]>([]);
-  const [isCreating, setIsCreating] = useState(false);
+  const createMutation = useCreateLessonPlanMutation();
 
   const updateMoment = (key: MomentKey, activityIds: number[]) => {
     setMoments((prev) => ({ ...prev, [key]: activityIds }));
@@ -40,27 +40,25 @@ export function TeacherPlanWizard() {
   const { valid: momentsValid } = validateMoments(moments, orgConfig.desarrollo_max_activities);
 
   const handleCreate = async () => {
-    setIsCreating(true);
-    try {
-      const data: LessonPlanCreate = {
-        course_subject_id: courseSubjectId,
-        coordination_document_id: 0, // Will be resolved by backend from course_subject context
-        class_number: classNum,
-        title: objective.slice(0, 80) || undefined,
-        moments: {
-          apertura: { activities: moments.apertura, activityContent: {} },
-          desarrollo: { activities: moments.desarrollo, activityContent: {} },
-          cierre: { activities: moments.cierre, activityContent: {} },
-        },
-        resources_mode: resourcesMode,
-        fonts: resourcesMode === 'global' ? { global: globalFontIds } : undefined,
-      };
+    const data: LessonPlanCreate = {
+      course_subject_id: courseSubjectId,
+      coordination_document_id: 0, // Will be resolved by backend from course_subject context
+      class_number: classNum,
+      title: objective.slice(0, 80) || undefined,
+      moments: {
+        apertura: { activities: moments.apertura, activityContent: {} },
+        desarrollo: { activities: moments.desarrollo, activityContent: {} },
+        cierre: { activities: moments.cierre, activityContent: {} },
+      },
+      resources_mode: resourcesMode,
+      fonts: resourcesMode === 'global' ? { global: globalFontIds } : undefined,
+    };
 
-      const plan = await lessonPlansApi.create(data);
+    try {
+      const plan = await createMutation.mutateAsync(data);
       navigate(`/teacher/plans/${plan.id}`);
-    } catch (error) {
-      console.error('Error creating plan:', error);
-      setIsCreating(false);
+    } catch (_error) {
+      // mutation error — TQ handles retry; button re-enables via isPending
     }
   };
 
@@ -217,8 +215,8 @@ export function TeacherPlanWizard() {
               >
                 Anterior
               </button>
-              <Button onClick={handleCreate} disabled={!momentsValid || isCreating} className='cursor-pointer'>
-                {isCreating ? 'Creando...' : 'Planificar clase'}
+              <Button onClick={handleCreate} disabled={!momentsValid || createMutation.isPending} className='cursor-pointer'>
+                {createMutation.isPending ? 'Creando...' : 'Planificar clase'}
               </Button>
             </div>
           )}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, FileText, Trash2 } from 'lucide-react';
 import { useResourcesQuery, useDeleteResourceMutation } from '@/hooks/queries/useResourceQueries';
 import { useSubjectsQuery, useCourseSubjectsQuery } from '@/hooks/queries/useReferenceQueries';
+import { useNomenclature } from '@/hooks/useOrgConfig';
 import { ResourceCard } from '@/components/resources/ResourceCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -14,6 +15,7 @@ export function Resources() {
   const deleteResourceMutation = useDeleteResourceMutation();
   const { data: subjects = [] } = useSubjectsQuery();
   const { data: courseSubjects = [] } = useCourseSubjectsQuery();
+  const resourcePluralLabel = useNomenclature('resource_plural');
 
   const [filterSubjectId, setFilterSubjectId] = useState<number | null>(null);
 
@@ -42,7 +44,7 @@ export function Resources() {
     <div className='max-w-6xl mx-auto px-6 py-8'>
       <div className='flex items-center justify-between mb-6'>
         <div>
-          <h1 className='title-2-emphasized text-[#10182B]'>Recursos</h1>
+          <h1 className='title-2-emphasized text-[#10182B]'>{resourcePluralLabel}</h1>
           <p className='body-2-regular text-muted-foreground mt-1'>Crea y gestiona tus recursos educativos</p>
         </div>
         <Button onClick={() => navigate('/resources/new')} className='gap-2 cursor-pointer'>

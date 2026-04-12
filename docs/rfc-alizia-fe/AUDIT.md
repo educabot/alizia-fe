@@ -104,8 +104,8 @@ Todas alineadas al RFC backend. Ver rfc-alizia-fe.md seccion 3.2 para tabla comp
 | Rehidratacion en F5 | OK | authStore.hydrate() lee sessionStorage |
 | ProtectedRoute con roles | OK | components/auth/ProtectedRoute.tsx |
 | RequireModule con feature flag | OK | components/auth/RequireModule.tsx |
-| Multi-rol simultaneo en sidebar | PARCIAL | getUserRole() devuelve solo rol primario. hasRole() soporta multi. Sidebar filtra por primario. |
-| Redirect a onboarding post-login | FALTA | Login hace navigate('/') directo |
+| Multi-rol simultaneo en sidebar | OK | Sidebar usa hasRole() multi-rol. Items de todos los roles visibles. |
+| Redirect a onboarding post-login | OK | useAuth.handleLogin chequea onboardingApi.getStatus() → /onboarding si no completado |
 
 ---
 
@@ -119,8 +119,9 @@ Todas alineadas al RFC backend. Ver rfc-alizia-fe.md seccion 3.2 para tabla comp
 | Pagina 404 (NotFound) | OK |
 | Pagina 403 (Forbidden) | OK |
 | Sidebar filtrada por rol + flags | OK |
-| useNomenclature en labels | FALTA — hook existe, sidebar usa strings hardcodeados |
-| Links de sidebar correctos | PARCIAL — verificar destinos |
+| useNomenclature en sidebar labels | OK — sidebar consume useNomenclature para documentos y recursos |
+| useNomenclature en headers/titulos | OK — Course, TeacherHome, TeacherCourseSubject, Resources usan useNomenclature |
+| Links de sidebar correctos | OK — destinos reales: /coordinator/documents, /resources, /admin/areas |
 
 ---
 
@@ -145,19 +146,13 @@ Todas alineadas al RFC backend. Ver rfc-alizia-fe.md seccion 3.2 para tabla comp
 
 ## Resumen de gaps pendientes
 
-### Prioridad alta
-1. **G-8** — Verificar destinos de sidebar links
-2. **G-1** — Redirect a /onboarding post-login si onboarding no completado
-
 ### Prioridad media
-3. **G-7** — Teaching mutations en TanStack Query (create, update lesson plan)
-4. **G-2** — Multi-rol en sidebar (mostrar items de todos los roles)
-5. **G-4** — Aplicar paginacion real en listados
+1. **G-4** — Aplicar paginacion real en listados
+2. **G-2** — Multi-rol en home redirect (sidebar ya multi-rol; home usa rol primario — aceptable)
 
 ### Prioridad baja
-6. **G-3** — Consumir useNomenclature en sidebar/headers
-7. **G-5** — Rate limit con cooldown visual diferenciado
-8. **G-6** — Markdown editor real para secciones tipo markdown
+3. **G-5** — Rate limit con cooldown visual diferenciado
+4. **G-6** — Markdown editor real para secciones tipo markdown
 
 ---
 
@@ -175,3 +170,7 @@ Todas alineadas al RFC backend. Ver rfc-alizia-fe.md seccion 3.2 para tabla comp
 | G-4.1 Token se pierde en F5 | CERRADO — sessionStorage + hydrate() |
 | G-5.1 Sin /coordinator/documents | CERRADO — CoordinatorDocuments page |
 | G-5.3 Sin paginas 404/403 | CERRADO — NotFound + Forbidden |
+| G-8 Sidebar links rotos | CERRADO — destinos reales + multi-rol + useNomenclature |
+| G-1 Sin redirect a onboarding | CERRADO — useAuth.handleLogin chequea onboardingApi.getStatus() |
+| G-7 Teaching sin mutations TQ | CERRADO — 4 mutations: create, update, updateStatus, generateActivity |
+| G-3 useNomenclature sin consumidores | CERRADO — 4 paginas usan useNomenclature para titulos |

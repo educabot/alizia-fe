@@ -645,14 +645,10 @@ const canShowResources = useFeatureFlag('contenido');
 
 | ID | Area | Estado actual | Requisito RFC | Prioridad | Esfuerzo |
 |---|------|--------------|--------------|-----------|----------|
-| G-1 | Onboarding redirect | Login hace `navigate('/')` directo | Verificar `onboarding_completed_at`, redirect a `/onboarding` si null | Alta | Bajo |
-| G-2 | Multi-rol sidebar | Sidebar muestra solo rol primario | Mostrar items de todos los roles del usuario | Media | Bajo |
-| G-3 | Nomenclatura dinamica | `useNomenclature` existe sin consumidores | Sidebar, headers, titulos usan labels dinamicos de org config | Baja | Bajo |
+| G-2 | Multi-rol home redirect | Home redirect usa rol primario (`getUserRole()`) | Home muestra dashboard del rol primario; sidebar ya muestra items de todos los roles | Baja | Bajo |
 | G-4 | Paginacion en listados | `usePaginatedList` hook existe | Aplicar en listados que hoy cargan solo primera pagina (20 items) | Media | Medio |
 | G-5 | Rate limit diferenciado | Errores de IA tratados igual | Diferenciar `AI_RATE_LIMITED` con cooldown visual | Baja | Bajo |
 | G-6 | Markdown editor | `type: 'markdown'` renderiza Textarea | Editor markdown real para secciones de documento | Baja | Medio |
-| G-7 | Teaching mutations | No hay mutations TQ para lesson plans | Crear `useCreateLessonPlanMutation`, `useUpdateLessonPlanMutation` | Media | Bajo |
-| G-8 | Sidebar links parciales | Algunos items apuntan a `/` | Verificar que todos los destinos existen y son correctos | Alta | Bajo |
 
 ### 9.2 Brechas cerradas (resueltas desde v0.1)
 
@@ -674,6 +670,10 @@ Estos items estaban en la tabla de brechas del RFC v0.1 y ya fueron implementado
 | Token se pierde en F5 | sessionStorage + hydrate() al bootstrap |
 | Sin paginas 404/403 | NotFound + Forbidden pages |
 | Sin CoordinatorDocuments | Pagina dedicada con listado |
+| Sidebar links rotos (apuntaban a `/`) | Links reales: `/coordinator/documents`, `/resources`, `/admin/areas` + multi-rol + useNomenclature |
+| Sin redirect a onboarding post-login | `useAuth.handleLogin` chequea `onboardingApi.getStatus()` y redirige a `/onboarding` si no completado |
+| Teaching sin mutations TQ | 4 mutations: useCreateLessonPlanMutation, useUpdateLessonPlanMutation, useUpdateLessonPlanStatusMutation, useGenerateActivityMutation |
+| useNomenclature sin consumidores en paginas | Course, TeacherHome, TeacherCourseSubject, Resources usan useNomenclature para titulos |
 
 ### 9.3 Lo que se reutiliza del POC original
 
@@ -718,14 +718,10 @@ Estos items estaban en la tabla de brechas del RFC v0.1 y ya fueron implementado
 
 Tareas ordenadas por prioridad:
 
-1. **G-8** — Verificar/arreglar destinos de sidebar links
-2. **G-1** — Redirect a onboarding post-login
-3. **G-7** — Teaching mutations en TanStack Query
-4. **G-2** — Multi-rol en sidebar
-5. **G-4** — Aplicar paginacion en listados
-6. **G-3** — Consumir `useNomenclature` en sidebar/headers
-7. **G-5** — Rate limit con cooldown visual
-8. **G-6** — Markdown editor real
+1. **G-4** — Aplicar paginacion en listados
+2. **G-2** — Multi-rol en home redirect (sidebar ya multi-rol; home usa rol primario — aceptable)
+3. **G-5** — Rate limit con cooldown visual
+4. **G-6** — Markdown editor real
 
 ### 10.3 Criterios de aceptacion transversales
 

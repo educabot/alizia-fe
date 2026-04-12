@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Bell } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useCourseSubjectsQuery } from '@/hooks/queries/useReferenceQueries';
+import { useNomenclature } from '@/hooks/useOrgConfig';
 import { NotificationList } from '@/components/dashboard/NotificationList';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { PendingPlansCard } from '@/components/dashboard/PendingPlansCard';
@@ -14,6 +15,7 @@ export function TeacherHome() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const { data: courseSubjects = [] } = useCourseSubjectsQuery();
+  const subjectPluralLabel = useNomenclature('subject_plural');
 
   const firstName = user?.name.split(' ')[0] || '';
   const teacherId = user?.id;
@@ -39,7 +41,7 @@ export function TeacherHome() {
 
       {/* Stats row */}
       <div className='grid grid-cols-3 gap-4 mb-8 dashboard-section'>
-        <StatsCard icon={BookOpen} label='Mis materias' value={myCourseSubjects.length} />
+        <StatsCard icon={BookOpen} label={subjectPluralLabel} value={myCourseSubjects.length} />
         <PendingPlansCard
           plans={[]}
           onViewPlan={(plan) => {
@@ -61,7 +63,7 @@ export function TeacherHome() {
       <div className='grid grid-cols-[1fr_320px] gap-6'>
         {/* Left: Course subjects */}
         <div>
-          <h2 className='headline-1-bold text-[#10182B] mb-4'>Mis materias</h2>
+          <h2 className='headline-1-bold text-[#10182B] mb-4'>{subjectPluralLabel}</h2>
           {myCourseSubjects.length > 0 ? (
             <div className='grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3'>
               {myCourseSubjects.map((cs) => (

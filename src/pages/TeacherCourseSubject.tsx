@@ -6,6 +6,7 @@ import {
   useAreasQuery,
 } from '@/hooks/queries/useReferenceQueries';
 import { useLessonPlansQuery } from '@/hooks/queries/useTeachingQueries';
+import { useNomenclature } from '@/hooks/useOrgConfig';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronLeft } from 'lucide-react';
@@ -21,6 +22,7 @@ export function TeacherCourseSubject() {
   const { data: subjects = [] } = useSubjectsQuery();
   const { data: areas = [] } = useAreasQuery();
   const { data: lessonPlans = [], isLoading } = useLessonPlansQuery(csId);
+  const lessonPlanPluralLabel = useNomenclature('lesson_plan_plural');
 
   const cs = courseSubjects.find((c) => c.id === csId);
   const course = cs ? courses.find((c) => c.id === cs.course_id) : null;
@@ -54,7 +56,7 @@ export function TeacherCourseSubject() {
 
       {/* Lesson plan list */}
       <div className='space-y-3'>
-        <h2 className='headline-1-bold text-[#10182B] mb-4'>Mis clases</h2>
+        <h2 className='headline-1-bold text-[#10182B] mb-4'>{lessonPlanPluralLabel}</h2>
 
         {isLoading ? (
           <div className='space-y-3'>
