@@ -6,19 +6,20 @@ import type { SectionConfig, SectionValue } from '@/types';
 
 const SECTION_CONFIGS: SectionConfig[] = [
   { key: 'problem_edge', label: 'Arista del problema', type: 'text', ai_prompt: '', required: true },
-  { key: 'methodology', label: 'Enfoque metodologico', type: 'select_text', options: ['Constructivista', 'Conductista'], ai_prompt: '', required: true },
+  {
+    key: 'methodology',
+    label: 'Enfoque metodologico',
+    type: 'select_text',
+    options: ['Constructivista', 'Conductista'],
+    ai_prompt: '',
+    required: true,
+  },
   { key: 'notes', label: 'Notas adicionales', type: 'text', ai_prompt: '', required: false },
 ];
 
 describe('DynamicSectionRenderer', () => {
   it('renders all section labels', () => {
-    render(
-      <DynamicSectionRenderer
-        sectionConfigs={SECTION_CONFIGS}
-        sections={{}}
-        onSectionChange={vi.fn()}
-      />,
-    );
+    render(<DynamicSectionRenderer sectionConfigs={SECTION_CONFIGS} sections={{}} onSectionChange={vi.fn()} />);
 
     expect(screen.getByText('Arista del problema')).toBeInTheDocument();
     expect(screen.getByText('Enfoque metodologico')).toBeInTheDocument();
@@ -26,25 +27,13 @@ describe('DynamicSectionRenderer', () => {
   });
 
   it('renders empty state when no configs', () => {
-    render(
-      <DynamicSectionRenderer
-        sectionConfigs={[]}
-        sections={{}}
-        onSectionChange={vi.fn()}
-      />,
-    );
+    render(<DynamicSectionRenderer sectionConfigs={[]} sections={{}} onSectionChange={vi.fn()} />);
 
     expect(screen.getByText('No hay secciones configuradas para este documento')).toBeInTheDocument();
   });
 
   it('shows select dropdown for select_text type', () => {
-    render(
-      <DynamicSectionRenderer
-        sectionConfigs={SECTION_CONFIGS}
-        sections={{}}
-        onSectionChange={vi.fn()}
-      />,
-    );
+    render(<DynamicSectionRenderer sectionConfigs={SECTION_CONFIGS} sections={{}} onSectionChange={vi.fn()} />);
 
     const select = screen.getByRole('combobox');
     expect(select).toBeInTheDocument();
@@ -54,16 +43,13 @@ describe('DynamicSectionRenderer', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    render(
-      <DynamicSectionRenderer
-        sectionConfigs={SECTION_CONFIGS}
-        sections={{}}
-        onSectionChange={onChange}
-      />,
-    );
+    render(<DynamicSectionRenderer sectionConfigs={SECTION_CONFIGS} sections={{}} onSectionChange={onChange} />);
 
     await user.selectOptions(screen.getByRole('combobox'), 'Constructivista');
-    expect(onChange).toHaveBeenCalledWith('methodology', expect.objectContaining({ selected_option: 'Constructivista' }));
+    expect(onChange).toHaveBeenCalledWith(
+      'methodology',
+      expect.objectContaining({ selected_option: 'Constructivista' }),
+    );
   });
 
   it('displays existing section values', () => {
@@ -72,13 +58,7 @@ describe('DynamicSectionRenderer', () => {
       methodology: { selected_option: 'Conductista', value: 'Detalle metodologico' },
     };
 
-    render(
-      <DynamicSectionRenderer
-        sectionConfigs={SECTION_CONFIGS}
-        sections={sections}
-        onSectionChange={vi.fn()}
-      />,
-    );
+    render(<DynamicSectionRenderer sectionConfigs={SECTION_CONFIGS} sections={sections} onSectionChange={vi.fn()} />);
 
     expect(screen.getByText('El problema central es...')).toBeInTheDocument();
     expect(screen.getByText('Detalle metodologico')).toBeInTheDocument();
@@ -127,9 +107,6 @@ describe('validateSections', () => {
       problem_edge: { value: '  ' },
       methodology: { selected_option: '' },
     };
-    expect(validateSections(SECTION_CONFIGS, sections)).toEqual([
-      'Arista del problema',
-      'Enfoque metodologico',
-    ]);
+    expect(validateSections(SECTION_CONFIGS, sections)).toEqual(['Arista del problema', 'Enfoque metodologico']);
   });
 });

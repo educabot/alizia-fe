@@ -30,7 +30,7 @@ export function ClassCard({ plan, onClick, className }: ClassCardProps) {
 
   return (
     <div
-      role="button"
+      role='button'
       tabIndex={0}
       onClick={onClick}
       onKeyDown={handleKeyDown}
@@ -39,22 +39,18 @@ export function ClassCard({ plan, onClick, className }: ClassCardProps) {
         className,
       )}
     >
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-gray-500">
-              Clase {plan.class_number}
-            </span>
+      <div className='flex items-center justify-between'>
+        <div className='space-y-1'>
+          <div className='flex items-center gap-2'>
+            <span className='text-xs font-semibold text-gray-500'>Clase {plan.class_number}</span>
             {plan.is_shared && <SharedClassIndicator />}
           </div>
-          <h4 className="headline-1-bold text-[#10182B]">{title}</h4>
-          <Badge className={cn('rounded-lg', status.className)}>
-            {status.label}
-          </Badge>
+          <h4 className='headline-1-bold text-[#10182B]'>{title}</h4>
+          <Badge className={cn('rounded-lg', status.className)}>{status.label}</Badge>
         </div>
-        <div className="flex items-center gap-2 text-primary font-medium">
+        <div className='flex items-center gap-2 text-primary font-medium'>
           <span>{hasPlan ? 'Ver plan' : 'Planificar'}</span>
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className='w-5 h-5' />
         </div>
       </div>
     </div>

@@ -26,7 +26,7 @@ export function DynamicContentRenderer({ schema, content, onChange, readOnly }: 
   const keys = Object.keys(schema);
 
   if (keys.length === 0) {
-    return <p className="text-sm text-gray-400 italic">Sin esquema definido para este tipo de recurso</p>;
+    return <p className='text-sm text-gray-400 italic'>Sin esquema definido para este tipo de recurso</p>;
   }
 
   const handleFieldChange = (key: string, value: unknown) => {
@@ -34,7 +34,7 @@ export function DynamicContentRenderer({ schema, content, onChange, readOnly }: 
   };
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {keys.map((key) => {
         const field = schema[key];
         if (!field) return null;
@@ -80,17 +80,17 @@ function StringField({
   readOnly?: boolean;
 }) {
   return (
-    <div className="space-y-1.5">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+    <div className='space-y-1.5'>
+      <label className='text-sm font-medium text-gray-700'>{label}</label>
       {readOnly ? (
-        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-lg p-3">
-          {value || <span className="text-gray-400 italic">Sin contenido</span>}
+        <p className='text-sm text-gray-700 leading-relaxed whitespace-pre-wrap bg-gray-50 rounded-lg p-3'>
+          {value || <span className='text-gray-400 italic'>Sin contenido</span>}
         </p>
       ) : (
         <Textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="min-h-20 resize-none"
+          className='min-h-20 resize-none'
           placeholder={`Ingresa ${label.toLowerCase()}...`}
         />
       )}
@@ -116,9 +116,7 @@ function ArrayField({
   const itemSchema = field.items!;
 
   const handleItemChange = (index: number, itemKey: string, value: string) => {
-    const updated = items.map((item, i) =>
-      i === index ? { ...item, [itemKey]: value } : item,
-    );
+    const updated = items.map((item, i) => (i === index ? { ...item, [itemKey]: value } : item));
     onChange(updated);
   };
 
@@ -135,35 +133,35 @@ function ArrayField({
   };
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-gray-700">{field.label || fieldKey}</label>
+    <div className='space-y-3'>
+      <div className='flex items-center justify-between'>
+        <label className='text-sm font-medium text-gray-700'>{field.label || fieldKey}</label>
         {!readOnly && (
-          <Button type="button" variant="ghost" size="sm" onClick={handleAdd} className="gap-1 text-primary">
-            <Plus className="w-4 h-4" />
+          <Button type='button' variant='ghost' size='sm' onClick={handleAdd} className='gap-1 text-primary'>
+            <Plus className='w-4 h-4' />
             Agregar
           </Button>
         )}
       </div>
 
       {items.length === 0 && (
-        <p className="text-xs text-gray-400 italic">Sin elementos. Haz clic en "Agregar" para crear uno.</p>
+        <p className='text-xs text-gray-400 italic'>Sin elementos. Haz clic en "Agregar" para crear uno.</p>
       )}
 
-      <div className="space-y-3">
+      <div className='space-y-3'>
         {items.map((item, index) => (
-          <div key={index} className="relative border border-[#E4E8EF] rounded-xl p-4 space-y-3 bg-white">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-medium text-gray-400">
+          <div key={index} className='relative border border-[#E4E8EF] rounded-xl p-4 space-y-3 bg-white'>
+            <div className='flex items-center justify-between mb-1'>
+              <span className='text-xs font-medium text-gray-400'>
                 {field.label || fieldKey} #{index + 1}
               </span>
               {!readOnly && (
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => handleRemove(index)}
-                  className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                  className='text-gray-400 hover:text-red-500 transition-colors cursor-pointer'
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className='w-4 h-4' />
                 </button>
               )}
             </div>

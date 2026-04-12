@@ -19,20 +19,12 @@ const SCHEMA = {
 const CONTENT = {
   title: 'Mi titulo',
   introduction: 'Intro del recurso',
-  sections: [
-    { heading: 'Seccion 1', content: 'Contenido 1' },
-  ],
+  sections: [{ heading: 'Seccion 1', content: 'Contenido 1' }],
 };
 
 describe('DynamicContentRenderer', () => {
   it('renders string fields with labels', () => {
-    render(
-      <DynamicContentRenderer
-        schema={SCHEMA}
-        content={CONTENT}
-        onChange={vi.fn()}
-      />,
-    );
+    render(<DynamicContentRenderer schema={SCHEMA} content={CONTENT} onChange={vi.fn()} />);
 
     expect(screen.getByText('Titulo')).toBeInTheDocument();
     expect(screen.getByText('Introduccion')).toBeInTheDocument();
@@ -41,13 +33,7 @@ describe('DynamicContentRenderer', () => {
   });
 
   it('renders array items with labels', () => {
-    render(
-      <DynamicContentRenderer
-        schema={SCHEMA}
-        content={CONTENT}
-        onChange={vi.fn()}
-      />,
-    );
+    render(<DynamicContentRenderer schema={SCHEMA} content={CONTENT} onChange={vi.fn()} />);
 
     expect(screen.getByText('Secciones')).toBeInTheDocument();
     expect(screen.getByText('Secciones #1')).toBeInTheDocument();
@@ -59,13 +45,7 @@ describe('DynamicContentRenderer', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    render(
-      <DynamicContentRenderer
-        schema={SCHEMA}
-        content={CONTENT}
-        onChange={onChange}
-      />,
-    );
+    render(<DynamicContentRenderer schema={SCHEMA} content={CONTENT} onChange={onChange} />);
 
     const titleInput = screen.getByDisplayValue('Mi titulo');
     await user.type(titleInput, '!');
@@ -79,23 +59,14 @@ describe('DynamicContentRenderer', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    render(
-      <DynamicContentRenderer
-        schema={SCHEMA}
-        content={CONTENT}
-        onChange={onChange}
-      />,
-    );
+    render(<DynamicContentRenderer schema={SCHEMA} content={CONTENT} onChange={onChange} />);
 
     const addBtn = screen.getByText('Agregar');
     await user.click(addBtn);
 
     expect(onChange).toHaveBeenCalledWith({
       ...CONTENT,
-      sections: [
-        ...CONTENT.sections,
-        { heading: '', content: '' },
-      ],
+      sections: [...CONTENT.sections, { heading: '', content: '' }],
     });
   });
 
@@ -103,18 +74,10 @@ describe('DynamicContentRenderer', () => {
     const user = userEvent.setup();
     const onChange = vi.fn();
 
-    render(
-      <DynamicContentRenderer
-        schema={SCHEMA}
-        content={CONTENT}
-        onChange={onChange}
-      />,
-    );
+    render(<DynamicContentRenderer schema={SCHEMA} content={CONTENT} onChange={onChange} />);
 
     // Find the trash button (svg.lucide-trash-2)
-    const trashButtons = screen.getAllByRole('button').filter(
-      (btn) => btn.querySelector('svg.lucide-trash-2'),
-    );
+    const trashButtons = screen.getAllByRole('button').filter((btn) => btn.querySelector('svg.lucide-trash-2'));
     await user.click(trashButtons[0]);
 
     expect(onChange).toHaveBeenCalledWith({
@@ -124,26 +87,13 @@ describe('DynamicContentRenderer', () => {
   });
 
   it('renders empty state when schema is empty', () => {
-    render(
-      <DynamicContentRenderer
-        schema={{}}
-        content={{}}
-        onChange={vi.fn()}
-      />,
-    );
+    render(<DynamicContentRenderer schema={{}} content={{}} onChange={vi.fn()} />);
 
     expect(screen.getByText('Sin esquema definido para este tipo de recurso')).toBeInTheDocument();
   });
 
   it('renders read-only mode without inputs', () => {
-    render(
-      <DynamicContentRenderer
-        schema={SCHEMA}
-        content={CONTENT}
-        onChange={vi.fn()}
-        readOnly
-      />,
-    );
+    render(<DynamicContentRenderer schema={SCHEMA} content={CONTENT} onChange={vi.fn()} readOnly />);
 
     // Should show content as text, not as inputs
     expect(screen.getByText('Mi titulo')).toBeInTheDocument();

@@ -48,20 +48,14 @@ export function ChatPanel({
         const history = [...messages, userMsg];
         const result = await routeChat(entityType, entityId, content.trim(), history);
 
-        setMessages((prev) => [
-          ...prev,
-          { role: 'assistant', content: result.content },
-        ]);
+        setMessages((prev) => [...prev, { role: 'assistant', content: result.content }]);
 
         if (result.document_updated && onEntityUpdated) {
           onEntityUpdated();
         }
       } catch (error) {
         console.error('Chat error:', error);
-        setMessages((prev) => [
-          ...prev,
-          { role: 'assistant', content: 'Lo siento, hubo un error. Intenta de nuevo.' },
-        ]);
+        setMessages((prev) => [...prev, { role: 'assistant', content: 'Lo siento, hubo un error. Intenta de nuevo.' }]);
       } finally {
         setIsSending(false);
       }

@@ -14,9 +14,7 @@ export interface PublishValidationIssue {
  *   2. Every subject has at least one class
  *   3. Every class has a title and objective
  */
-export function validateDocumentForPublish(
-  document: CoordinationDocument,
-): PublishValidationIssue[] {
+export function validateDocumentForPublish(document: CoordinationDocument): PublishValidationIssue[] {
   const issues: PublishValidationIssue[] = [];
 
   const sectionConfigs: SectionConfig[] = document.org_config?.coord_doc_sections ?? [];
@@ -72,25 +70,22 @@ export function PublishValidation({ document }: PublishValidationProps) {
   if (issues.length === 0) {
     return (
       <div
-        role="status"
-        className="flex items-start gap-2 rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-800"
+        role='status'
+        className='flex items-start gap-2 rounded-xl bg-green-50 border border-green-200 p-3 text-sm text-green-800'
       >
-        <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+        <CheckCircle2 className='w-4 h-4 shrink-0 mt-0.5' />
         <span>El documento esta listo para publicar.</span>
       </div>
     );
   }
 
   return (
-    <div
-      role="alert"
-      className="rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900"
-    >
-      <div className="flex items-center gap-2 mb-2 font-medium">
-        <AlertTriangle className="w-4 h-4" />
+    <div role='alert' className='rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900'>
+      <div className='flex items-center gap-2 mb-2 font-medium'>
+        <AlertTriangle className='w-4 h-4' />
         <span>No se puede publicar todavia</span>
       </div>
-      <ul className="list-disc list-inside space-y-0.5 text-amber-800">
+      <ul className='list-disc list-inside space-y-0.5 text-amber-800'>
         {issues.map((issue, index) => (
           <li key={`${issue.kind}-${index}`}>{issue.message}</li>
         ))}

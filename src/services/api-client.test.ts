@@ -19,12 +19,14 @@ function jsonResponse(data: unknown, status = 200) {
 
 describe('api-client', () => {
   beforeEach(() => {
+    sessionStorage.clear();
     setAuthToken(null);
     mockFetch.mockReset();
   });
 
   afterEach(() => {
     setAuthToken(null);
+    sessionStorage.clear();
   });
 
   describe('token management', () => {
@@ -39,6 +41,17 @@ describe('api-client', () => {
       setAuthToken(null);
       expect(getAuthToken()).toBeNull();
     });
+
+    it('persists the token to sessionStorage', () => {
+      setAuthToken('persisted-jwt');
+      expect(sessionStorage.getItem('alizia_auth_token')).toBe('persisted-jwt');
+    });
+
+    it('removes the token from sessionStorage when cleared', () => {
+      setAuthToken('persisted-jwt');
+      setAuthToken(null);
+      expect(sessionStorage.getItem('alizia_auth_token')).toBeNull();
+    });
   });
 
   describe('GET requests', () => {
@@ -47,9 +60,12 @@ describe('api-client', () => {
 
       const result = await apiClient.get('/users/1');
 
-      expect(mockFetch).toHaveBeenCalledWith('http://test-api/users/1', expect.objectContaining({
-        headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
-      }));
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api/users/1',
+        expect.objectContaining({
+          headers: expect.objectContaining({ 'Content-Type': 'application/json' }),
+        }),
+      );
       expect(result).toEqual({ id: 1 });
     });
 
@@ -59,9 +75,12 @@ describe('api-client', () => {
 
       await apiClient.get('/me');
 
-      expect(mockFetch).toHaveBeenCalledWith('http://test-api/me', expect.objectContaining({
-        headers: expect.objectContaining({ Authorization: 'Bearer my-jwt-token' }),
-      }));
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api/me',
+        expect.objectContaining({
+          headers: expect.objectContaining({ Authorization: 'Bearer my-jwt-token' }),
+        }),
+      );
     });
 
     it('omits auth header when no token', async () => {
@@ -80,32 +99,39 @@ describe('api-client', () => {
 
       await apiClient.post('/users', { name: 'Test' });
 
-      expect(mockFetch).toHaveBeenCalledWith('http://test-api/users', expect.objectContaining({
-        method: 'POST',
-        body: JSON.stringify({ name: 'Test' }),
-      }));
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://test-api/users',
+        expect.objectContaining({
+          method: 'POST',
+          body: JSON.stringify({ name: 'Test' }),
+        }),
+      );
     });
   });
 
   describe('error handling', () => {
     it('throws APIError on 400 with error body', async () => {
-      mockFetch.mockResolvedValueOnce(jsonResponse({
-        error: { code: 'VALIDATION_ERROR', message: 'Invalid email', details: { field: 'email' } },
-      }, 400));
+      mockFetch.mockResolvedValueOnce(
+        jsonResponse(
+          {
+            error: { code: 'VALIDATION_ERROR', message: 'Invalid email', details: { field: 'email' } },
+          },
+          400,
+        ),
+      );
 
       await expect(apiClient.post('/auth/login', {})).rejects.toThrow(APIError);
-
-      try {
-        await apiClient.post('/auth/login', {});
-      } catch (err) {
-        // second call for detailed assertion
-      }
     });
 
     it('parses error code and message from body', async () => {
-      mockFetch.mockResolvedValueOnce(jsonResponse({
-        error: { code: 'NOT_FOUND', message: 'User not found' },
-      }, 404));
+      mockFetch.mockResolvedValueOnce(
+        jsonResponse(
+          {
+            error: { code: 'NOT_FOUND', message: 'User not found' },
+          },
+          404,
+        ),
+      );
 
       try {
         await apiClient.get('/users/999');
@@ -123,9 +149,14 @@ describe('api-client', () => {
       const onUnauth = vi.fn();
       setOnUnauthorized(onUnauth);
 
-      mockFetch.mockResolvedValueOnce(jsonResponse({
-        error: { code: 'UNAUTHORIZED', message: 'Token expired' },
-      }, 401));
+      mockFetch.mockResolvedValueOnce(
+        jsonResponse(
+          {
+            error: { code: 'UNAUTHORIZED', message: 'Token expired' },
+          },
+          401,
+        ),
+      );
 
       try {
         await apiClient.get('/me');

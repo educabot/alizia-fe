@@ -10,16 +10,16 @@ interface FontRequirementSelectorProps {
 export function FontRequirementSelector({ fonts, selectedFontId, onSelect }: FontRequirementSelectorProps) {
   if (fonts.length === 0) {
     return (
-      <div className="p-4 rounded-xl bg-amber-50 text-amber-700 text-sm">
+      <div className='p-4 rounded-xl bg-amber-50 text-amber-700 text-sm'>
         No hay fuentes disponibles para el area seleccionada.
       </div>
     );
   }
 
   return (
-    <div className="space-y-2">
-      <p className="text-sm text-gray-600">Selecciona la fuente bibliografica para este recurso:</p>
-      <div className="space-y-2">
+    <div className='space-y-2'>
+      <p className='text-sm text-gray-600'>Selecciona la fuente bibliografica para este recurso:</p>
+      <div className='space-y-2'>
         {fonts.map((font) => (
           <label
             key={font.id}
@@ -30,14 +30,14 @@ export function FontRequirementSelector({ fonts, selectedFontId, onSelect }: Fon
             }`}
           >
             <input
-              type="radio"
-              name="font-selector"
+              type='radio'
+              name='font-selector'
               checked={selectedFontId === font.id}
               onChange={() => onSelect(font.id)}
-              className="accent-primary"
+              className='accent-primary'
             />
-            <BookOpen className="w-4 h-4 text-gray-400 shrink-0" />
-            <span className="text-sm text-gray-700">{font.name}</span>
+            <BookOpen className='w-4 h-4 text-gray-400 shrink-0' />
+            <span className='text-sm text-gray-700'>{font.name}</span>
           </label>
         ))}
       </div>

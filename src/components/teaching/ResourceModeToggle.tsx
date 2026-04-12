@@ -13,25 +13,16 @@ const OPTIONS: { key: ResourcesMode; label: string }[] = [
   { key: 'per_moment', label: 'Por momento' },
 ];
 
-export function ResourceModeToggle({
-  value,
-  onChange,
-  disabled = false,
-  className,
-}: ResourceModeToggleProps) {
+export function ResourceModeToggle({ value, onChange, disabled = false, className }: ResourceModeToggleProps) {
   return (
-    <div
-      role="group"
-      aria-label="Modo de fuentes"
-      className={cn('flex gap-2', className)}
-    >
+    <div role='group' aria-label='Modo de fuentes' className={cn('flex gap-2', className)}>
       {OPTIONS.map((opt) => {
         const isActive = value === opt.key;
         return (
           <button
             key={opt.key}
-            type="button"
-            role="radio"
+            type='button'
+            role='radio'
             aria-checked={isActive}
             disabled={disabled}
             onClick={() => onChange(opt.key)}

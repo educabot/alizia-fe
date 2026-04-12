@@ -71,9 +71,7 @@ export function SubjectClassConfig({
   const toggleTopic = (subjectId: number, topicId: number) => {
     if (readOnly) return;
     const current = value[subjectId]?.topic_ids ?? [];
-    const next = current.includes(topicId)
-      ? current.filter((id) => id !== topicId)
-      : [...current, topicId];
+    const next = current.includes(topicId) ? current.filter((id) => id !== topicId) : [...current, topicId];
     onChange({
       ...value,
       [subjectId]: {
@@ -85,26 +83,21 @@ export function SubjectClassConfig({
 
   if (subjects.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground text-center py-4">
-        No hay disciplinas en el area seleccionada.
-      </p>
+      <p className='text-sm text-muted-foreground text-center py-4'>No hay disciplinas en el area seleccionada.</p>
     );
   }
 
   if (mode === 'class_count') {
     return (
-      <div className="space-y-3">
+      <div className='space-y-3'>
         {subjects.map((subject) => {
           const count = value[subject.id]?.class_count ?? 0;
           return (
-            <div
-              key={subject.id}
-              className="flex items-center justify-between bg-[#FFFFFF4D] rounded-lg p-4"
-            >
-              <Label className="text-secondary-foreground body-2-medium">{subject.name}</Label>
-              <div className="flex items-center gap-4">
+            <div key={subject.id} className='flex items-center justify-between bg-[#FFFFFF4D] rounded-lg p-4'>
+              <Label className='text-secondary-foreground body-2-medium'>{subject.name}</Label>
+              <div className='flex items-center gap-4'>
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => updateClassCount(subject.id, -1)}
                   disabled={count === 0 || readOnly}
                   aria-label={`Restar clase a ${subject.name}`}
@@ -114,16 +107,13 @@ export function SubjectClassConfig({
                       : 'border-2 border-[#E4E8EF] cursor-not-allowed opacity-50'
                   }`}
                 >
-                  <Minus className="w-5 h-5" />
+                  <Minus className='w-5 h-5' />
                 </button>
-                <span
-                  className="w-8 text-center text-[#2C2C2C] font-medium"
-                  data-testid={`class-count-${subject.id}`}
-                >
+                <span className='w-8 text-center text-[#2C2C2C] font-medium' data-testid={`class-count-${subject.id}`}>
                   {count}
                 </span>
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => updateClassCount(subject.id, 1)}
                   disabled={readOnly}
                   aria-label={`Sumar clase a ${subject.name}`}
@@ -133,7 +123,7 @@ export function SubjectClassConfig({
                       : 'bg-white/60 border-gray-100 border-2 cursor-pointer hover:bg-white/80'
                   }`}
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className='w-5 h-5' />
                 </button>
               </div>
             </div>
@@ -145,33 +135,31 @@ export function SubjectClassConfig({
 
   // mode === 'topics'
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {subjects.map((subject) => {
         const assignedTopics = value[subject.id]?.topic_ids ?? [];
         return (
-          <div key={subject.id} className="space-y-3 activity-card-bg rounded-2xl p-4">
-            <h3 className="body-1-medium text-secondary-foreground">{subject.name}</h3>
+          <div key={subject.id} className='space-y-3 activity-card-bg rounded-2xl p-4'>
+            <h3 className='body-1-medium text-secondary-foreground'>{subject.name}</h3>
             {availableTopicIds.length === 0 ? (
-              <p className="text-xs text-muted-foreground">
+              <p className='text-xs text-muted-foreground'>
                 Selecciona temas en el paso anterior para poder asignarlos.
               </p>
             ) : (
-              <div className="flex flex-wrap gap-2">
+              <div className='flex flex-wrap gap-2'>
                 {availableTopicIds.map((topicId) => {
                   const isAssigned = assignedTopics.includes(topicId);
                   const name = topicNameById.get(topicId) ?? `Topic ${topicId}`;
                   return (
                     <button
                       key={topicId}
-                      type="button"
+                      type='button'
                       disabled={readOnly}
                       onClick={() => toggleTopic(subject.id, topicId)}
                       className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                         readOnly ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
                       } ${
-                        isAssigned
-                          ? 'bg-[#735FE3] text-white hover:bg-[#735FE3]/90'
-                          : 'fill-primary text-[#47566C]'
+                        isAssigned ? 'bg-[#735FE3] text-white hover:bg-[#735FE3]/90' : 'fill-primary text-[#47566C]'
                       }`}
                     >
                       {name}
@@ -191,10 +179,7 @@ export function SubjectClassConfig({
  * Returns true when every subject has at least one topic assigned.
  * Use this as the guard for advancing out of step 3.
  */
-export function allSubjectsHaveTopics(
-  subjects: Subject[],
-  value: SubjectConfigMap,
-): boolean {
+export function allSubjectsHaveTopics(subjects: Subject[], value: SubjectConfigMap): boolean {
   if (subjects.length === 0) return false;
   return subjects.every((s) => (value[s.id]?.topic_ids.length ?? 0) > 0);
 }

@@ -28,7 +28,7 @@ export function GenerateButton({
   disabled = false,
 }: GenerateButtonProps) {
   return (
-    <div className="inline-flex flex-col items-start gap-1">
+    <div className='inline-flex flex-col items-start gap-1'>
       <Button
         onClick={onClick}
         disabled={isGenerating || disabled}
@@ -38,19 +38,19 @@ export function GenerateButton({
       >
         {isGenerating ? (
           <>
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className='w-4 h-4 animate-spin' />
             Generando...
           </>
         ) : (
           <>
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className='w-4 h-4' />
             {label}
           </>
         )}
       </Button>
       {error && (
-        <div className="flex items-center gap-1 text-xs text-red-600">
-          <AlertCircle className="w-3 h-3" />
+        <div className='flex items-center gap-1 text-xs text-red-600'>
+          <AlertCircle className='w-3 h-3' />
           {error}
         </div>
       )}

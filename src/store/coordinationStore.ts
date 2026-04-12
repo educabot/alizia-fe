@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { CoordinationDocument, ChatMessage } from '@/types';
+import type { ChatMessage } from '@/types';
 
 interface WizardData {
   step: number;
@@ -22,15 +22,11 @@ const initialWizardData: WizardData = {
 };
 
 interface CoordinationState {
-  documents: CoordinationDocument[];
-  currentDocument: CoordinationDocument | null;
   wizardData: WizardData;
   chatHistory: ChatMessage[];
   isGenerating: boolean;
   expandedSubjects: Record<string, boolean>;
 
-  setDocuments: (documents: CoordinationDocument[]) => void;
-  setCurrentDocument: (doc: CoordinationDocument | null) => void;
   updateWizardData: (data: Partial<WizardData>) => void;
   resetWizardData: () => void;
   addChatMessage: (message: ChatMessage) => void;
@@ -40,20 +36,14 @@ interface CoordinationState {
 }
 
 export const useCoordinationStore = create<CoordinationState>((set) => ({
-  documents: [],
-  currentDocument: null,
   wizardData: { ...initialWizardData },
   chatHistory: [],
   isGenerating: false,
   expandedSubjects: {},
 
-  setDocuments: (documents) => set({ documents }),
-  setCurrentDocument: (currentDocument) => set({ currentDocument }),
-  updateWizardData: (data) =>
-    set((state) => ({ wizardData: { ...state.wizardData, ...data } })),
+  updateWizardData: (data) => set((state) => ({ wizardData: { ...state.wizardData, ...data } })),
   resetWizardData: () => set({ wizardData: { ...initialWizardData } }),
-  addChatMessage: (message) =>
-    set((state) => ({ chatHistory: [...state.chatHistory, message] })),
+  addChatMessage: (message) => set((state) => ({ chatHistory: [...state.chatHistory, message] })),
   clearChatHistory: () => set({ chatHistory: [] }),
   setIsGenerating: (isGenerating) => set({ isGenerating }),
   toggleSubjectExpanded: (subjectId) =>

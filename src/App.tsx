@@ -1,13 +1,20 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'sonner';
+import { createQueryClient } from '@/lib/query-client';
 import { useAuthStore } from '@/store/authStore';
-import { useReferenceStore } from '@/store/referenceStore';
-import { useCoordinationStore } from '@/store/coordinationStore';
 import { useConfigStore } from '@/store/configStore';
-import { useResourceStore } from '@/store/resourceStore';
+import { referenceKeys } from '@/hooks/queries/useReferenceQueries';
+import { resourceKeys } from '@/hooks/queries/useResourceQueries';
+import { coordinationKeys } from '@/hooks/queries/useCoordinationQueries';
+
+const queryClient = createQueryClient();
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { RequireModule } from '@/components/auth/RequireModule';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { RouteBoundary } from '@/components/RouteBoundary';
 import { LoadingFallback } from '@/components/LoadingFallback';
 import { MainLayout } from './components/layout/MainLayout';
 import { applyVisualIdentity, clearVisualIdentity } from '@/lib/visual-identity';
@@ -41,13 +48,25 @@ const TeacherHome = lazy(() => import('./pages/TeacherHome').then((m) => ({ defa
 const Course = lazy(() => import('./pages/Course').then((m) => ({ default: m.Course })));
 const Wizard = lazy(() => import('./pages/Wizard').then((m) => ({ default: m.Wizard })));
 const Document = lazy(() => import('./pages/Document').then((m) => ({ default: m.Document })));
-const TeacherCourseSubject = lazy(() => import('./pages/TeacherCourseSubject').then((m) => ({ default: m.TeacherCourseSubject })));
-const TeacherPlanWizard = lazy(() => import('./pages/TeacherPlanWizard').then((m) => ({ default: m.TeacherPlanWizard })));
-const TeacherLessonPlan = lazy(() => import('./pages/TeacherLessonPlan').then((m) => ({ default: m.TeacherLessonPlan })));
+const TeacherCourseSubject = lazy(() =>
+  import('./pages/TeacherCourseSubject').then((m) => ({ default: m.TeacherCourseSubject })),
+);
+const TeacherPlanWizard = lazy(() =>
+  import('./pages/TeacherPlanWizard').then((m) => ({ default: m.TeacherPlanWizard })),
+);
+const TeacherLessonPlan = lazy(() =>
+  import('./pages/TeacherLessonPlan').then((m) => ({ default: m.TeacherLessonPlan })),
+);
 const Resources = lazy(() => import('./pages/Resources').then((m) => ({ default: m.Resources })));
 const ResourceCreate = lazy(() => import('./pages/ResourceCreate').then((m) => ({ default: m.ResourceCreate })));
 const ResourceEditor = lazy(() => import('./pages/ResourceEditor').then((m) => ({ default: m.ResourceEditor })));
 const Onboarding = lazy(() => import('./pages/Onboarding').then((m) => ({ default: m.Onboarding })));
+const CoordinatorDocuments = lazy(() =>
+  import('./pages/CoordinatorDocuments').then((m) => ({ default: m.CoordinatorDocuments })),
+);
+const AdminHome = lazy(() => import('./pages/AdminHome').then((m) => ({ default: m.AdminHome })));
+const AdminAreas = lazy(() => import('./pages/AdminAreas').then((m) => ({ default: m.AdminAreas })));
+const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 /** Try to load from API, fall back to mocks for local dev without backend */
 async function loadOrgConfig(): Promise<void> {
@@ -64,47 +83,56 @@ async function loadOrgConfig(): Promise<void> {
 }
 
 async function loadReferenceData(): Promise<void> {
-  const { setCourses, setAreas, setSubjects, setTopics, setCourseSubjects, setActivitiesByMoment, setFonts } =
-    useReferenceStore.getState();
-  const setDocuments = useCoordinationStore.getState().setDocuments;
-
   try {
-    const [courses, areas, subjects, topicsRes, documents, courseSubjects, apertura, desarrollo, cierre] =
-      await Promise.all([
-        coursesApi.list(),
-        areasApi.list(),
-        subjectsApi.list(),
-        topicsApi.getTree(),
-        coordinationDocumentsApi.list(),
-        courseSubjectsApi.list(),
-        activitiesApi.list({ moment: 'apertura' }),
-        activitiesApi.list({ moment: 'desarrollo' }),
-        activitiesApi.list({ moment: 'cierre' }),
-      ]);
-
-    setCourses(courses.items);
-    setAreas(areas.items);
-    setSubjects(subjects.items);
-    setTopics(topicsRes.items);
-    setDocuments(documents.items);
-    setCourseSubjects(courseSubjects.items);
-    setActivitiesByMoment({
-      apertura: apertura.items,
-      desarrollo: desarrollo.items,
-      cierre: cierre.items,
-    });
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: referenceKeys.courses,
+        queryFn: async () => (await coursesApi.list()).items,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: referenceKeys.areas,
+        queryFn: async () => (await areasApi.list()).items,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: referenceKeys.subjects,
+        queryFn: async () => (await subjectsApi.list()).items,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: referenceKeys.topics,
+        queryFn: async () => (await topicsApi.getTree()).items,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: coordinationKeys.all,
+        queryFn: async () => (await coordinationDocumentsApi.list()).items,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: referenceKeys.courseSubjects,
+        queryFn: async () => (await courseSubjectsApi.list()).items,
+      }),
+      queryClient.prefetchQuery({
+        queryKey: referenceKeys.activitiesByMoment,
+        queryFn: async () => {
+          const [apertura, desarrollo, cierre] = await Promise.all([
+            activitiesApi.list({ moment: 'apertura' }),
+            activitiesApi.list({ moment: 'desarrollo' }),
+            activitiesApi.list({ moment: 'cierre' }),
+          ]);
+          return { apertura: apertura.items, desarrollo: desarrollo.items, cierre: cierre.items };
+        },
+      }),
+    ]);
   } catch {
     console.warn('[Alizia] Backend unavailable — using mock reference data');
-    setCourses(MOCK_COURSES);
-    setAreas(MOCK_AREAS);
-    setSubjects(MOCK_SUBJECTS);
-    setTopics(MOCK_TOPICS);
-    setCourseSubjects(MOCK_COURSE_SUBJECTS);
-    setActivitiesByMoment(MOCK_ACTIVITIES);
-    setFonts(MOCK_FONTS);
-    setDocuments([]);
-    useResourceStore.getState().setResourceTypes(MOCK_RESOURCE_TYPES);
-    useResourceStore.getState().setResources(MOCK_RESOURCES);
+    queryClient.setQueryData(referenceKeys.courses, MOCK_COURSES);
+    queryClient.setQueryData(referenceKeys.areas, MOCK_AREAS);
+    queryClient.setQueryData(referenceKeys.subjects, MOCK_SUBJECTS);
+    queryClient.setQueryData(referenceKeys.topics, MOCK_TOPICS);
+    queryClient.setQueryData(referenceKeys.courseSubjects, MOCK_COURSE_SUBJECTS);
+    queryClient.setQueryData(referenceKeys.activitiesByMoment, MOCK_ACTIVITIES);
+    queryClient.setQueryData(referenceKeys.fonts, MOCK_FONTS);
+    queryClient.setQueryData(coordinationKeys.all, []);
+    queryClient.setQueryData(resourceKeys.types, MOCK_RESOURCE_TYPES);
+    queryClient.setQueryData(resourceKeys.all, MOCK_RESOURCES);
   }
 }
 
@@ -130,12 +158,14 @@ function AppRoutes() {
 
   if (!user) {
     return (
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </Suspense>
+      <RouteBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path='/login' element={<Login />} />
+            <Route path='*' element={<Navigate to='/login' replace />} />
+          </Routes>
+        </Suspense>
+      </RouteBoundary>
     );
   }
 
@@ -144,116 +174,142 @@ function AppRoutes() {
   }
 
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <Routes>
-        <Route path="/login" element={<Navigate to="/" replace />} />
-        <Route
-          path="/onboarding"
-          element={
-            <ProtectedRoute>
-              <Onboarding />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/coordinator/courses/:id/documents/new"
-          element={
-            <ProtectedRoute roles={['coordinator']}>
-              <Wizard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/coordinator/documents/:id"
-          element={
-            <ProtectedRoute roles={['coordinator']}>
-              <Document />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/teacher/plans/:id"
-          element={
-            <ProtectedRoute roles={['teacher']}>
-              <RequireModule module="planificacion">
-                <TeacherLessonPlan />
-              </RequireModule>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/resources/new"
-          element={
-            <ProtectedRoute roles={['teacher']}>
-              <RequireModule module="contenido">
-                <ResourceCreate />
-              </RequireModule>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/resources/:id"
-          element={
-            <ProtectedRoute roles={['teacher']}>
-              <RequireModule module="contenido">
-                <ResourceEditor />
-              </RequireModule>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <ProtectedRoute>
-              <MainLayout>
-                <Routes>
-                  <Route
-                    path="/"
-                    element={
-                      userRole === 'coordinator' ? (
-                        <CoordinatorHome />
-                      ) : userRole === 'teacher' ? (
-                        <TeacherHome />
-                      ) : (
-                        <Navigate to="/login" replace />
-                      )
-                    }
-                  />
-                  <Route path="/coordinator/courses/:id" element={<Course />} />
-                  <Route path="/teacher/courses/:id" element={<TeacherCourseSubject />} />
-                  <Route
-                    path="/teacher/courses/:csId/plans/:classNumber/new"
-                    element={
-                      <RequireModule module="planificacion">
-                        <TeacherPlanWizard />
-                      </RequireModule>
-                    }
-                  />
-                  <Route
-                    path="/resources"
-                    element={
-                      <RequireModule module="contenido">
-                        <Resources />
-                      </RequireModule>
-                    }
-                  />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </MainLayout>
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Suspense>
+    <RouteBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path='/login' element={<Navigate to='/' replace />} />
+          <Route
+            path='/onboarding'
+            element={
+              <ProtectedRoute>
+                <Onboarding />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/coordinator/courses/:id/documents/new'
+            element={
+              <ProtectedRoute roles={['coordinator']}>
+                <Wizard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/coordinator/documents/new'
+            element={
+              <ProtectedRoute roles={['coordinator']}>
+                <Wizard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/coordinator/documents/:id'
+            element={
+              <ProtectedRoute roles={['coordinator']}>
+                <Document />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/teacher/plans/:id'
+            element={
+              <ProtectedRoute roles={['teacher']}>
+                <RequireModule module='planificacion'>
+                  <TeacherLessonPlan />
+                </RequireModule>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/resources/new'
+            element={
+              <ProtectedRoute roles={['teacher']}>
+                <RequireModule module='contenido'>
+                  <ResourceCreate />
+                </RequireModule>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/resources/:id'
+            element={
+              <ProtectedRoute roles={['teacher']}>
+                <RequireModule module='contenido'>
+                  <ResourceEditor />
+                </RequireModule>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='*'
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <RouteBoundary>
+                    <Routes>
+                      <Route
+                        path='/'
+                        element={
+                          userRole === 'coordinator' ? (
+                            <CoordinatorHome />
+                          ) : userRole === 'teacher' ? (
+                            <TeacherHome />
+                          ) : userRole === 'admin' ? (
+                            <AdminHome />
+                          ) : (
+                            <Navigate to='/login' replace />
+                          )
+                        }
+                      />
+                      <Route
+                        path='/coordinator/documents'
+                        element={userRole === 'coordinator' ? <CoordinatorDocuments /> : <Navigate to='/' replace />}
+                      />
+                      <Route
+                        path='/admin/areas'
+                        element={userRole === 'admin' ? <AdminAreas /> : <Navigate to='/' replace />}
+                      />
+                      <Route path='/coordinator/courses/:id' element={<Course />} />
+                      <Route path='/teacher/courses/:id' element={<TeacherCourseSubject />} />
+                      <Route
+                        path='/teacher/courses/:csId/plans/:classNumber/new'
+                        element={
+                          <RequireModule module='planificacion'>
+                            <TeacherPlanWizard />
+                          </RequireModule>
+                        }
+                      />
+                      <Route
+                        path='/resources'
+                        element={
+                          <RequireModule module='contenido'>
+                            <Resources />
+                          </RequireModule>
+                        }
+                      />
+                      <Route path='*' element={<NotFound />} />
+                    </Routes>
+                  </RouteBoundary>
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
+    </RouteBoundary>
   );
 }
 
 function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+        <Toaster position='top-right' richColors closeButton />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </ErrorBoundary>
   );
 }

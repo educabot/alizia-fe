@@ -29,13 +29,7 @@ const TYPES: ResourceType[] = [
 
 describe('ResourceTypeSelector', () => {
   it('renders all resource types', () => {
-    render(
-      <ResourceTypeSelector
-        resourceTypes={TYPES}
-        selected={null}
-        onSelect={vi.fn()}
-      />,
-    );
+    render(<ResourceTypeSelector resourceTypes={TYPES} selected={null} onSelect={vi.fn()} />);
 
     expect(screen.getByText('Guia de lectura')).toBeInTheDocument();
     expect(screen.getByText('Ficha de catedra')).toBeInTheDocument();
@@ -44,13 +38,7 @@ describe('ResourceTypeSelector', () => {
   });
 
   it('shows "Requiere fuente" badge for types that need it', () => {
-    render(
-      <ResourceTypeSelector
-        resourceTypes={TYPES}
-        selected={null}
-        onSelect={vi.fn()}
-      />,
-    );
+    render(<ResourceTypeSelector resourceTypes={TYPES} selected={null} onSelect={vi.fn()} />);
 
     expect(screen.getByText('Requiere fuente')).toBeInTheDocument();
   });
@@ -59,26 +47,14 @@ describe('ResourceTypeSelector', () => {
     const user = userEvent.setup();
     const onSelect = vi.fn();
 
-    render(
-      <ResourceTypeSelector
-        resourceTypes={TYPES}
-        selected={null}
-        onSelect={onSelect}
-      />,
-    );
+    render(<ResourceTypeSelector resourceTypes={TYPES} selected={null} onSelect={onSelect} />);
 
     await user.click(screen.getByText('Ficha de catedra'));
     expect(onSelect).toHaveBeenCalledWith(TYPES[1]);
   });
 
   it('highlights selected type', () => {
-    const { container } = render(
-      <ResourceTypeSelector
-        resourceTypes={TYPES}
-        selected={TYPES[0]}
-        onSelect={vi.fn()}
-      />,
-    );
+    const { container } = render(<ResourceTypeSelector resourceTypes={TYPES} selected={TYPES[0]} onSelect={vi.fn()} />);
 
     const buttons = container.querySelectorAll('button');
     expect(buttons[0].className).toContain('border-primary bg-primary/5');
@@ -86,13 +62,7 @@ describe('ResourceTypeSelector', () => {
   });
 
   it('shows empty message when no types', () => {
-    render(
-      <ResourceTypeSelector
-        resourceTypes={[]}
-        selected={null}
-        onSelect={vi.fn()}
-      />,
-    );
+    render(<ResourceTypeSelector resourceTypes={[]} selected={null} onSelect={vi.fn()} />);
 
     expect(screen.getByText('No hay tipos de recurso disponibles')).toBeInTheDocument();
   });

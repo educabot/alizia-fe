@@ -30,17 +30,15 @@ export function DynamicSectionRenderer({
 }: DynamicSectionRendererProps) {
   if (sectionConfigs.length === 0) {
     return (
-      <div className="text-sm text-gray-500 py-4 text-center">
-        No hay secciones configuradas para este documento
-      </div>
+      <div className='text-sm text-gray-500 py-4 text-center'>No hay secciones configuradas para este documento</div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className='space-y-6'>
       {sectionConfigs.map((config, index) => (
         <div key={config.key}>
-          {index > 0 && <div className="border-t border-purple-200/50 mb-6" />}
+          {index > 0 && <div className='border-t border-purple-200/50 mb-6' />}
           <SectionEditor
             config={config}
             value={sections[config.key] ?? {}}
@@ -59,10 +57,7 @@ export function DynamicSectionRenderer({
  * Validates that all required sections have values.
  * Returns list of missing section labels.
  */
-export function validateSections(
-  sectionConfigs: SectionConfig[],
-  sections: Record<string, SectionValue>,
-): string[] {
+export function validateSections(sectionConfigs: SectionConfig[], sections: Record<string, SectionValue>): string[] {
   const missing: string[] = [];
   for (const config of sectionConfigs) {
     if (!config.required) continue;

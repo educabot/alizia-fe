@@ -1,8 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
+import { createTestQueryClient } from '@/test-utils';
+import { referenceKeys } from '@/hooks/queries/useReferenceQueries';
 import { useAuthStore } from '@/store/authStore';
-import { useReferenceStore } from '@/store/referenceStore';
 import { TeacherHome } from './TeacherHome';
 import type { CourseSubject } from '@/types';
 
@@ -44,20 +46,25 @@ const mockCourseSubjects: CourseSubject[] = [
   },
 ];
 
+let queryClient: ReturnType<typeof createTestQueryClient>;
+
 function renderHome() {
   return render(
-    <MemoryRouter>
-      <TeacherHome />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <TeacherHome />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
 describe('TeacherHome', () => {
   beforeEach(() => {
+    queryClient = createTestQueryClient();
     useAuthStore.setState({
       user: { id: 3, name: 'Maria Docente', email: 'm@t.com', avatar: '', roles: ['teacher'] },
     });
-    useReferenceStore.setState({ courseSubjects: mockCourseSubjects });
+    queryClient.setQueryData(referenceKeys.courseSubjects, mockCourseSubjects);
   });
 
   it('greets the user by first name', () => {

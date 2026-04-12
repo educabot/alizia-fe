@@ -10,9 +10,7 @@ const slots: TimeSlot[] = [
     day: 'monday',
     start_time: '09:00',
     end_time: '10:00',
-    subjects: [
-      { course_subject_id: 1, subject_name: 'Matematicas', teacher_name: 'Ana' },
-    ],
+    subjects: [{ course_subject_id: 1, subject_name: 'Matematicas', teacher_name: 'Ana' }],
   },
   {
     id: 2,
@@ -20,9 +18,7 @@ const slots: TimeSlot[] = [
     day: 'wednesday',
     start_time: '08:00',
     end_time: '09:00',
-    subjects: [
-      { course_subject_id: 2, subject_name: 'Lengua', teacher_name: 'Luis' },
-    ],
+    subjects: [{ course_subject_id: 2, subject_name: 'Lengua', teacher_name: 'Luis' }],
   },
   {
     id: 3,
@@ -44,7 +40,7 @@ describe('ScheduleGrid', () => {
   });
 
   it('renders a custom empty message', () => {
-    render(<ScheduleGrid slots={[]} emptyMessage="Cargando..." />);
+    render(<ScheduleGrid slots={[]} emptyMessage='Cargando...' />);
     expect(screen.getByText('Cargando...')).toBeInTheDocument();
   });
 
@@ -90,9 +86,7 @@ describe('ScheduleGrid', () => {
             day: 'monday',
             start_time: '10:00',
             end_time: '11:00',
-            subjects: [
-              { course_subject_id: 10, subject_name: 'Historia', teacher_name: 'Sol' },
-            ],
+            subjects: [{ course_subject_id: 10, subject_name: 'Historia', teacher_name: 'Sol' }],
           },
         ]}
       />,
@@ -110,9 +104,7 @@ describe('ScheduleGrid', () => {
             day: 'tuesday',
             start_time: '11:00',
             end_time: '12:00',
-            subjects: [
-              { course_subject_id: 5, subject_name: 'Educacion Fisica', teacher_name: null },
-            ],
+            subjects: [{ course_subject_id: 5, subject_name: 'Educacion Fisica', teacher_name: null }],
           },
         ]}
       />,
@@ -150,9 +142,7 @@ describe('ScheduleGrid', () => {
             day: 'thursday',
             start_time: '13:30:00',
             end_time: '14:30:00',
-            subjects: [
-              { course_subject_id: 6, subject_name: 'Arte', teacher_name: 'Paz' },
-            ],
+            subjects: [{ course_subject_id: 6, subject_name: 'Arte', teacher_name: 'Paz' }],
           },
         ]}
       />,

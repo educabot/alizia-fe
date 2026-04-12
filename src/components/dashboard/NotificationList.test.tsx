@@ -5,8 +5,24 @@ import { NotificationList } from './NotificationList';
 import type { Notification } from '@/types';
 
 const NOTIFICATIONS: Notification[] = [
-  { id: 1, user_id: 2, type: 'publication', title: 'Documento publicado', message: 'Coordinador publico un documento.', read: false, created_at: '2026-04-08T10:00:00Z' },
-  { id: 2, user_id: 2, type: 'deadline', title: 'Plazo proximo', message: 'Completa tus planes antes del viernes.', read: true, created_at: '2026-04-07T14:30:00Z' },
+  {
+    id: 1,
+    user_id: 2,
+    type: 'publication',
+    title: 'Documento publicado',
+    message: 'Coordinador publico un documento.',
+    read: false,
+    created_at: '2026-04-08T10:00:00Z',
+  },
+  {
+    id: 2,
+    user_id: 2,
+    type: 'deadline',
+    title: 'Plazo proximo',
+    message: 'Completa tus planes antes del viernes.',
+    read: true,
+    created_at: '2026-04-07T14:30:00Z',
+  },
 ];
 
 describe('NotificationList', () => {

@@ -5,7 +5,13 @@ import { ProfileForm } from './ProfileForm';
 import type { ProfileField } from '@/types';
 
 const FIELDS: ProfileField[] = [
-  { key: 'specialty', label: 'Area de especialidad', type: 'select', options: ['Ciencias', 'Humanidades', 'Matematica'], required: true },
+  {
+    key: 'specialty',
+    label: 'Area de especialidad',
+    type: 'select',
+    options: ['Ciencias', 'Humanidades', 'Matematica'],
+    required: true,
+  },
   { key: 'experience', label: 'Anos de experiencia', type: 'text', required: false },
   { key: 'preferences', label: 'Preferencias', type: 'multiselect', options: ['Email', 'Push'], required: false },
 ];

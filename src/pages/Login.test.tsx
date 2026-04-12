@@ -7,7 +7,7 @@ import { Login } from './Login';
 
 // Mock AnimatedOrb since it's a visual-only component
 vi.mock('@/components/ui/AnimatedOrb', () => ({
-  AnimatedOrb: () => <div data-testid="animated-orb" />,
+  AnimatedOrb: () => <div data-testid='animated-orb' />,
 }));
 
 function renderLogin() {

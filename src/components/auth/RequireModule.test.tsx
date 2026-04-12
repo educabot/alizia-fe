@@ -8,8 +8,8 @@ function renderWithRouter(ui: React.ReactElement, initialRoute = '/test') {
   return render(
     <MemoryRouter initialEntries={[initialRoute]}>
       <Routes>
-        <Route path="/" element={<div>Home Page</div>} />
-        <Route path="/test" element={ui} />
+        <Route path='/' element={<div>Home Page</div>} />
+        <Route path='/test' element={ui} />
       </Routes>
     </MemoryRouter>,
   );
@@ -27,7 +27,7 @@ describe('RequireModule', () => {
     });
 
     renderWithRouter(
-      <RequireModule module="contenido">
+      <RequireModule module='contenido'>
         <div>Resource Content</div>
       </RequireModule>,
     );
@@ -37,7 +37,7 @@ describe('RequireModule', () => {
 
   it('renders children when module is not set (defaults to enabled)', () => {
     renderWithRouter(
-      <RequireModule module="contenido">
+      <RequireModule module='contenido'>
         <div>Resource Content</div>
       </RequireModule>,
     );
@@ -52,7 +52,7 @@ describe('RequireModule', () => {
     });
 
     renderWithRouter(
-      <RequireModule module="contenido">
+      <RequireModule module='contenido'>
         <div>Resource Content</div>
       </RequireModule>,
     );

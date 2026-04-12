@@ -9,7 +9,7 @@ describe('SharedClassIndicator', () => {
   });
 
   it('renders a custom label', () => {
-    render(<SharedClassIndicator label="Shared" />);
+    render(<SharedClassIndicator label='Shared' />);
     expect(screen.getByText('Shared')).toBeInTheDocument();
   });
 
@@ -20,12 +20,12 @@ describe('SharedClassIndicator', () => {
   });
 
   it('accepts extra classes', () => {
-    render(<SharedClassIndicator className="custom-class" />);
+    render(<SharedClassIndicator className='custom-class' />);
     expect(screen.getByRole('status')).toHaveClass('custom-class');
   });
 
   it('renders the md variant with different sizing classes', () => {
-    render(<SharedClassIndicator size="md" />);
+    render(<SharedClassIndicator size='md' />);
     const node = screen.getByRole('status');
     expect(node.className).toMatch(/text-sm/);
   });

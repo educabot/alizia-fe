@@ -52,13 +52,11 @@ export function ActivitySelector({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-lg max-h-[80vh] flex flex-col">
+      <DialogContent className='max-w-lg max-h-[80vh] flex flex-col'>
         <DialogHeader>
-          <DialogTitle>
-            Seleccionar actividades — {MOMENT_LABELS[momentKey]}
-          </DialogTitle>
+          <DialogTitle>Seleccionar actividades — {MOMENT_LABELS[momentKey]}</DialogTitle>
         </DialogHeader>
-        <div className="space-y-2 mt-4 flex-1 overflow-y-auto">
+        <div className='space-y-2 mt-4 flex-1 overflow-y-auto'>
           {activities.map((activity) => {
             const isSelected = tempSelected.includes(activity.id);
             const isDisabled = !isSelected && maxActivities !== undefined && tempSelected.length >= maxActivities;
@@ -67,30 +65,24 @@ export function ActivitySelector({
                 key={activity.id}
                 className={`flex items-start gap-3 p-4 rounded-xl border-2 transition-all ${
                   isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-                } ${
-                  isSelected
-                    ? 'border-primary bg-primary/5'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
-                }`}
+                } ${isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300 bg-white'}`}
               >
                 <Checkbox
                   checked={isSelected}
                   onCheckedChange={() => !isDisabled && handleToggle(activity.id)}
                   disabled={isDisabled}
-                  className="mt-0.5"
+                  className='mt-0.5'
                 />
-                <div className="flex-1 min-w-0">
-                  <span className="font-medium text-gray-800">{activity.name}</span>
-                  {activity.description && (
-                    <p className="text-sm text-gray-500 mt-1">{activity.description}</p>
-                  )}
+                <div className='flex-1 min-w-0'>
+                  <span className='font-medium text-gray-800'>{activity.name}</span>
+                  {activity.description && <p className='text-sm text-gray-500 mt-1'>{activity.description}</p>}
                 </div>
               </label>
             );
           })}
         </div>
-        <div className="pt-4 border-t mt-4">
-          <Button onClick={handleConfirm} className="w-full cursor-pointer">
+        <div className='pt-4 border-t mt-4'>
+          <Button onClick={handleConfirm} className='w-full cursor-pointer'>
             Confirmar seleccion
           </Button>
         </div>

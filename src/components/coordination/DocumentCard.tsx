@@ -37,30 +37,28 @@ export function DocumentCard({ document, onClick }: DocumentCardProps) {
           onClick();
         }
       }}
-      role="button"
+      role='button'
       tabIndex={0}
-      className="bg-white border border-[#E4E8EF] rounded-2xl p-4 cursor-pointer transition-all hover:shadow-md hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/30 group"
+      className='bg-white border border-[#E4E8EF] rounded-2xl p-4 cursor-pointer transition-all hover:shadow-md hover:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/30 group'
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">
-            <FileText className="w-5 h-5" />
+      <div className='flex items-center justify-between'>
+        <div className='flex items-center gap-3 min-w-0'>
+          <div className='p-2 rounded-lg bg-primary/10 text-primary shrink-0'>
+            <FileText className='w-5 h-5' />
           </div>
-          <div className="min-w-0">
-            <h4 className="text-sm font-medium text-gray-900 truncate group-hover:text-primary transition-colors">
+          <div className='min-w-0'>
+            <h4 className='text-sm font-medium text-gray-900 truncate group-hover:text-primary transition-colors'>
               {document.name || `Documento #${document.id}`}
             </h4>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className='text-xs text-gray-500 mt-0.5'>
               {document.area_name}
               {year ? ` · ${year}` : ''}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <Badge className={`rounded-lg text-xs ${status.className} hover:${status.className}`}>
-            {status.label}
-          </Badge>
-          <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors" />
+        <div className='flex items-center gap-2 shrink-0'>
+          <Badge className={`rounded-lg text-xs ${status.className} hover:${status.className}`}>{status.label}</Badge>
+          <ChevronRight className='w-4 h-4 text-gray-300 group-hover:text-primary transition-colors' />
         </div>
       </div>
     </div>

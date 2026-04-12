@@ -3,12 +3,19 @@ import type { OrgConfig } from '@/types';
 
 const DEFAULT_NOMENCLATURE: Record<string, string> = {
   coordination_document: 'Documento de coordinacion',
+  coordination_document_plural: 'Documentos de coordinacion',
   lesson_plan: 'Plan de clase',
+  lesson_plan_plural: 'Planes de clase',
   area: 'Area',
+  area_plural: 'Areas',
   subject: 'Disciplina',
+  subject_plural: 'Disciplinas',
   course: 'Curso',
+  course_plural: 'Cursos',
   font: 'Fuente',
+  font_plural: 'Fuentes',
   resource: 'Recurso',
+  resource_plural: 'Recursos',
 };
 
 /** Access the full org config */

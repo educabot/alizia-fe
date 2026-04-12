@@ -1,21 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { useReferenceStore } from '@/store/referenceStore';
-import { useCoordinationStore } from '@/store/coordinationStore';
+import { createTestQueryClient } from '@/test-utils';
+import { referenceKeys } from '@/hooks/queries/useReferenceQueries';
+import { coordinationKeys } from '@/hooks/queries/useCoordinationQueries';
 import { Course } from './Course';
-import type {
-  Course as CourseType,
-  CourseSubject,
-  Subject,
-  Area,
-  CoordinationDocument,
-} from '@/types';
+import type { Course as CourseType, CourseSubject, Subject, Area, CoordinationDocument } from '@/types';
 
-const listMock = vi.fn();
 vi.mock('@/services/api', () => ({
   coordinationDocumentsApi: {
-    list: (...args: unknown[]) => listMock(...args),
+    list: vi.fn().mockResolvedValue({ items: [], more: false }),
   },
 }));
 
@@ -26,13 +21,9 @@ const mockCourse: CourseType = {
   created_at: '2026-01-01',
 };
 
-const mockAreas: Area[] = [
-  { id: 100, name: 'Matematicas', created_at: '2026-01-01' },
-];
+const mockAreas: Area[] = [{ id: 100, name: 'Matematicas', created_at: '2026-01-01' }];
 
-const mockSubjects: Subject[] = [
-  { id: 200, name: 'Algebra', area_id: 100, created_at: '2026-01-01' },
-];
+const mockSubjects: Subject[] = [{ id: 200, name: 'Algebra', area_id: 100, created_at: '2026-01-01' }];
 
 const mockCourseSubjects: CourseSubject[] = [
   {
@@ -66,26 +57,28 @@ const mockDocuments: CoordinationDocument[] = [
   },
 ];
 
+let queryClient: ReturnType<typeof createTestQueryClient>;
+
 function renderCourse(courseId = '1') {
   return render(
-    <MemoryRouter initialEntries={[`/coordinator/courses/${courseId}`]}>
-      <Routes>
-        <Route path="/coordinator/courses/:id" element={<Course />} />
-      </Routes>
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[`/coordinator/courses/${courseId}`]}>
+        <Routes>
+          <Route path='/coordinator/courses/:id' element={<Course />} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
 describe('Course page', () => {
   beforeEach(() => {
-    useReferenceStore.setState({
-      courses: [mockCourse],
-      courseSubjects: mockCourseSubjects,
-      areas: mockAreas,
-      subjects: mockSubjects,
-    });
-    useCoordinationStore.setState({ documents: mockDocuments });
-    listMock.mockResolvedValue({ items: mockDocuments, more: false });
+    queryClient = createTestQueryClient();
+    queryClient.setQueryData(referenceKeys.courses, [mockCourse]);
+    queryClient.setQueryData(referenceKeys.courseSubjects, mockCourseSubjects);
+    queryClient.setQueryData(referenceKeys.areas, mockAreas);
+    queryClient.setQueryData(referenceKeys.subjects, mockSubjects);
+    queryClient.setQueryData(coordinationKeys.all, mockDocuments);
   });
 
   it('shows course name in header', async () => {
@@ -104,11 +97,9 @@ describe('Course page', () => {
     expect(screen.getByText('2026')).toBeInTheDocument();
   });
 
-  it('filters documents by course areas', async () => {
+  it('filters documents by course areas', () => {
     renderCourse();
-    await waitFor(() => {
-      expect(screen.getByText('Itinerario Matematicas')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Itinerario Matematicas')).toBeInTheDocument();
   });
 
   it('shows not-found state when course does not exist', () => {

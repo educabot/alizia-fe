@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { useCoordinationStore } from '@/store/coordinationStore';
+import { createTestQueryClient } from '@/test-utils';
+import { coordinationKeys } from '@/hooks/queries/useCoordinationQueries';
 import { Document } from './Document';
 import type { CoordinationDocument } from '@/types';
 
@@ -18,11 +20,11 @@ vi.mock('@/services/api', () => ({
 }));
 
 vi.mock('@/components/ai/ChatPanel', () => ({
-  ChatPanel: () => <div data-testid="chat-panel" />,
+  ChatPanel: () => <div data-testid='chat-panel' />,
 }));
 
 vi.mock('@/components/ai/LoadingOrb', () => ({
-  LoadingOrb: ({ message }: { message?: string }) => <div data-testid="loading-orb">{message}</div>,
+  LoadingOrb: ({ message }: { message?: string }) => <div data-testid='loading-orb'>{message}</div>,
 }));
 
 const mockDocument: CoordinationDocument = {
@@ -40,31 +42,40 @@ const mockDocument: CoordinationDocument = {
   topics: [],
   subjects: [],
   org_config: {
-    coord_doc_sections: [
-      { key: 'resumen', label: 'Resumen', type: 'text', ai_prompt: '', required: false },
-    ],
+    coord_doc_sections: [{ key: 'resumen', label: 'Resumen', type: 'text', ai_prompt: '', required: false }],
   },
   created_at: '2026-01-01',
   updated_at: '2026-01-01',
 };
 
+let queryClient: ReturnType<typeof createTestQueryClient>;
+
 function renderDocument(docId = '1') {
   return render(
-    <MemoryRouter initialEntries={[`/coordinator/documents/${docId}`]}>
-      <Routes>
-        <Route path="/coordinator/documents/:id" element={<Document />} />
-      </Routes>
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[`/coordinator/documents/${docId}`]}>
+        <Routes>
+          <Route path='/coordinator/documents/:id' element={<Document />} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
 describe('Document page', () => {
   beforeEach(() => {
-    useCoordinationStore.setState({ currentDocument: null, isGenerating: false });
+    vi.clearAllMocks();
+    queryClient = createTestQueryClient();
     getByIdMock.mockResolvedValue(mockDocument);
   });
 
   it('shows loading state while document loads', () => {
+    getByIdMock.mockImplementation(
+      () =>
+        new Promise(() => {
+          /* never resolves */
+        }),
+    );
     renderDocument();
     expect(screen.getByTestId('loading-orb')).toBeInTheDocument();
   });

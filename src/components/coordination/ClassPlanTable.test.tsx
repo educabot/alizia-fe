@@ -12,8 +12,22 @@ const SUBJECTS: DocumentSubject[] = [
     class_count: 2,
     topics: [],
     classes: [
-      { id: 1, class_number: 1, title: 'Ecosistemas', objective: 'Comprender ecosistemas', topics: [], is_shared: false },
-      { id: 2, class_number: 2, title: 'Cadenas troficas', objective: 'Analizar cadenas', topics: [{ id: 100, name: 'Ecosistemas', level: 3, parent_id: 10, children: [] }], is_shared: true },
+      {
+        id: 1,
+        class_number: 1,
+        title: 'Ecosistemas',
+        objective: 'Comprender ecosistemas',
+        topics: [],
+        is_shared: false,
+      },
+      {
+        id: 2,
+        class_number: 2,
+        title: 'Cadenas troficas',
+        objective: 'Analizar cadenas',
+        topics: [{ id: 100, name: 'Ecosistemas', level: 3, parent_id: 10, children: [] }],
+        is_shared: true,
+      },
     ],
   },
   {

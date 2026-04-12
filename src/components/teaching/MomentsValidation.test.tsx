@@ -37,12 +37,7 @@ describe('MomentsValidation', () => {
   });
 
   it('shows error when desarrollo exceeds the maximum', () => {
-    render(
-      <MomentsValidation
-        moments={{ ...validMoments, desarrollo: [1, 2, 3] }}
-        maxDesarrolloActivities={2}
-      />,
-    );
+    render(<MomentsValidation moments={{ ...validMoments, desarrollo: [1, 2, 3] }} maxDesarrolloActivities={2} />);
     expect(screen.getByText('Desarrollo puede tener maximo 2 actividades')).toBeInTheDocument();
   });
 
@@ -52,11 +47,7 @@ describe('MomentsValidation', () => {
   });
 
   it('lists multiple errors at once', () => {
-    render(
-      <MomentsValidation
-        moments={{ apertura: [], desarrollo: [], cierre: [] }}
-      />,
-    );
+    render(<MomentsValidation moments={{ apertura: [], desarrollo: [], cierre: [] }} />);
     expect(screen.getByText('Apertura debe tener exactamente 1 actividad')).toBeInTheDocument();
     expect(screen.getByText('Desarrollo debe tener al menos 1 actividad')).toBeInTheDocument();
     expect(screen.getByText('Cierre debe tener exactamente 1 actividad')).toBeInTheDocument();

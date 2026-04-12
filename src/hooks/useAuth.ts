@@ -1,10 +1,16 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
+import { onboardingApi } from '@/services/api';
 
 /**
  * Convenience hook over useAuthStore.
- * Adds navigation (redirect to / after login, /login after logout).
+ * Adds navigation:
+ *  - Después de login, chequea `onboardingApi.getStatus()`:
+ *    - `completed: false` → redirect a `/onboarding`
+ *    - `completed: true`  → redirect a `/`
+ *    - Si el endpoint falla (dev sin backend), default a `/`.
+ *  - Después de logout, redirect a `/login`.
  */
 export function useAuth() {
   const { user, isLoading, error, getUserRole } = useAuthStore();
@@ -15,7 +21,19 @@ export function useAuth() {
   const handleLogin = useCallback(
     async (email: string, password: string) => {
       await login(email, password);
-      navigate('/');
+      // authStore.login captura errores internos — verificamos éxito por state.
+      const postLoginUser = useAuthStore.getState().user;
+      if (!postLoginUser) return;
+
+      try {
+        const status = await onboardingApi.getStatus();
+        navigate(status.completed ? '/' : '/onboarding');
+      } catch {
+        if (import.meta.env.DEV) {
+          console.warn('[Alizia] Onboarding status unavailable — defaulting to /');
+        }
+        navigate('/');
+      }
     },
     [login, navigate],
   );

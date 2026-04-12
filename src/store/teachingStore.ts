@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { CourseSubject, LessonPlan, ChatMessage, Moments, ResourcesMode } from '@/types';
+import type { Moments, ResourcesMode } from '@/types';
 
 interface LessonWizardData {
   step: number;
@@ -38,39 +38,15 @@ const initialLessonWizardData: LessonWizardData = {
 };
 
 interface TeachingState {
-  teacherCourses: CourseSubject[];
-  currentCourseSubject: CourseSubject | null;
-  lessonPlans: LessonPlan[];
   lessonWizardData: LessonWizardData;
-  currentLessonPlan: LessonPlan | null;
-  teacherChatHistory: ChatMessage[];
 
-  setTeacherCourses: (courses: CourseSubject[]) => void;
-  setCurrentCourseSubject: (cs: CourseSubject | null) => void;
-  setLessonPlans: (plans: LessonPlan[]) => void;
   updateLessonWizardData: (data: Partial<LessonWizardData>) => void;
   resetLessonWizardData: () => void;
-  setCurrentLessonPlan: (plan: LessonPlan | null) => void;
-  addTeacherChatMessage: (message: ChatMessage) => void;
-  clearTeacherChatHistory: () => void;
 }
 
 export const useTeachingStore = create<TeachingState>((set) => ({
-  teacherCourses: [],
-  currentCourseSubject: null,
-  lessonPlans: [],
   lessonWizardData: { ...initialLessonWizardData },
-  currentLessonPlan: null,
-  teacherChatHistory: [],
 
-  setTeacherCourses: (teacherCourses) => set({ teacherCourses }),
-  setCurrentCourseSubject: (currentCourseSubject) => set({ currentCourseSubject }),
-  setLessonPlans: (lessonPlans) => set({ lessonPlans }),
-  updateLessonWizardData: (data) =>
-    set((state) => ({ lessonWizardData: { ...state.lessonWizardData, ...data } })),
+  updateLessonWizardData: (data) => set((state) => ({ lessonWizardData: { ...state.lessonWizardData, ...data } })),
   resetLessonWizardData: () => set({ lessonWizardData: { ...initialLessonWizardData } }),
-  setCurrentLessonPlan: (currentLessonPlan) => set({ currentLessonPlan }),
-  addTeacherChatMessage: (message) =>
-    set((state) => ({ teacherChatHistory: [...state.teacherChatHistory, message] })),
-  clearTeacherChatHistory: () => set({ teacherChatHistory: [] }),
 }));

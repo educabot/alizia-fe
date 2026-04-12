@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
+import { Forbidden } from '@/pages/Forbidden';
 import type { UserRole } from '@/types';
 
 interface ProtectedRouteProps {
@@ -13,12 +14,13 @@ export function ProtectedRoute({ children, roles }: ProtectedRouteProps) {
   const hasRole = useAuthStore((s) => s.hasRole);
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to='/login' replace />;
   }
 
   if (roles && roles.length > 0) {
     if (!hasRole(...roles)) {
-      return <Navigate to="/" replace />;
+      // Mostramos 403 en vez de redirect silencioso — el usuario necesita feedback.
+      return <Forbidden />;
     }
   }
 

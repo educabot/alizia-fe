@@ -8,9 +8,9 @@ function renderWithRouter(ui: React.ReactElement, initialRoute = '/protected') {
   return render(
     <MemoryRouter initialEntries={[initialRoute]}>
       <Routes>
-        <Route path="/login" element={<div>Login Page</div>} />
-        <Route path="/" element={<div>Home Page</div>} />
-        <Route path="/protected" element={ui} />
+        <Route path='/login' element={<div>Login Page</div>} />
+        <Route path='/' element={<div>Home Page</div>} />
+        <Route path='/protected' element={ui} />
       </Routes>
     </MemoryRouter>,
   );
@@ -46,7 +46,7 @@ describe('ProtectedRoute', () => {
     expect(screen.getByText('Secret Content')).toBeInTheDocument();
   });
 
-  it('redirects to / when user lacks required role', () => {
+  it('shows Forbidden page when user lacks required role (G-5.3)', () => {
     useAuthStore.setState({
       user: { id: 1, name: 'Teacher', email: 't@t.com', avatar: '', roles: ['teacher'] },
     });
@@ -57,7 +57,8 @@ describe('ProtectedRoute', () => {
       </ProtectedRoute>,
     );
 
-    expect(screen.getByText('Home Page')).toBeInTheDocument();
+    // Ya no redirecciona silenciosamente — muestra 403 con feedback al usuario.
+    expect(screen.getByText('Acceso denegado')).toBeInTheDocument();
     expect(screen.queryByText('Coordinator Only')).not.toBeInTheDocument();
   });
 

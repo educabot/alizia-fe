@@ -10,7 +10,7 @@ describe('GenerateButton', () => {
   });
 
   it('renders custom label', () => {
-    render(<GenerateButton onClick={vi.fn()} isGenerating={false} label="Generar clases" />);
+    render(<GenerateButton onClick={vi.fn()} isGenerating={false} label='Generar clases' />);
     expect(screen.getByRole('button', { name: /generar clases/i })).toBeInTheDocument();
   });
 
@@ -40,7 +40,7 @@ describe('GenerateButton', () => {
   });
 
   it('shows error message', () => {
-    render(<GenerateButton onClick={vi.fn()} isGenerating={false} error="Error al generar" />);
+    render(<GenerateButton onClick={vi.fn()} isGenerating={false} error='Error al generar' />);
     expect(screen.getByText('Error al generar')).toBeInTheDocument();
   });
 

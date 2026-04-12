@@ -35,7 +35,7 @@ describe('UpcomingClassesWidget', () => {
   });
 
   it('shows empty message when no items', () => {
-    render(<UpcomingClassesWidget items={[]} emptyMessage="Sin clases" />);
+    render(<UpcomingClassesWidget items={[]} emptyMessage='Sin clases' />);
     expect(screen.getByText('Sin clases')).toBeInTheDocument();
   });
 

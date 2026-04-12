@@ -56,14 +56,14 @@ const DateInput = React.forwardRef<HTMLDivElement, DateInputProps>(
             )}
           >
             <span>{date ? format(date, 'dd/MM/yyyy', { locale: es }) : placeholder}</span>
-            <ChevronDown className="w-5 h-5 text-[#2C2C2C]/60" />
+            <ChevronDown className='w-5 h-5 text-[#2C2C2C]/60' />
           </div>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 border-0 shadow-lg" align="start">
+        <PopoverContent className='w-auto p-0 border-0 shadow-lg' align='start'>
           <Calendar
-            mode="single"
-            captionLayout="dropdown"
-            className="rounded-xl border-0"
+            mode='single'
+            captionLayout='dropdown'
+            className='rounded-xl border-0'
             selected={date}
             onSelect={handleSelect}
           />

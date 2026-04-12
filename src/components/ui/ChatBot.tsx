@@ -81,11 +81,11 @@ export function ChatBot({
       <div
         className={`${collapsed ? 'p-4 justify-center' : 'p-4 border-b border-muted justify-between'} flex items-center h-14`}
       >
-        {!collapsed && <h3 className="headline-1-bold text-[#10182B]">Chat Alizia</h3>}
+        {!collapsed && <h3 className='headline-1-bold text-[#10182B]'>Chat Alizia</h3>}
         <button
-          type="button"
+          type='button'
           onClick={handleToggle}
-          className="p-1 text-secondary-foreground transition-colors cursor-pointer rounded"
+          className='p-1 text-secondary-foreground transition-colors cursor-pointer rounded'
           title={collapsed ? 'Expandir chat' : 'Colapsar chat'}
         >
           <PanelRight />
@@ -94,14 +94,14 @@ export function ChatBot({
 
       {/* Messages Area - Only show when not collapsed */}
       {!collapsed && (
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className='flex-1 overflow-y-auto p-4 space-y-4'>
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}>
               {msg.role === 'assistant' && (
-                <div className="shrink-0">
-                  <div className="w-8 h-8 relative">
-                    <div className="absolute inset-0 bg-linear-to-b from-white via-indigo-200 to-indigo-500 rounded-full blur-sm opacity-60"></div>
-                    <div className="absolute inset-0 bg-linear-to-b from-white via-indigo-300 to-indigo-600 rounded-full"></div>
+                <div className='shrink-0'>
+                  <div className='w-8 h-8 relative'>
+                    <div className='absolute inset-0 bg-linear-to-b from-white via-indigo-200 to-indigo-500 rounded-full blur-sm opacity-60'></div>
+                    <div className='absolute inset-0 bg-linear-to-b from-white via-indigo-300 to-indigo-600 rounded-full'></div>
                   </div>
                 </div>
               )}
@@ -110,23 +110,23 @@ export function ChatBot({
                   msg.role === 'user' ? 'bg-[#735FE3] text-white' : 'bg-muted text-[#10182B]'
                 }`}
               >
-                <p className="body-2-regular">{msg.content}</p>
+                <p className='body-2-regular'>{msg.content}</p>
               </div>
             </div>
           ))}
           {/* Loader when generating response */}
           {isChatGenerating && (
-            <div className="flex justify-start items-end gap-2">
-              <div className="shrink-0">
-                <div className="w-8 h-8 relative">
-                  <div className="absolute inset-0 bg-linear-to-b from-white via-indigo-200 to-indigo-500 rounded-full blur-sm opacity-60"></div>
-                  <div className="absolute inset-0 bg-linear-to-b from-white via-indigo-300 to-indigo-600 rounded-full"></div>
+            <div className='flex justify-start items-end gap-2'>
+              <div className='shrink-0'>
+                <div className='w-8 h-8 relative'>
+                  <div className='absolute inset-0 bg-linear-to-b from-white via-indigo-200 to-indigo-500 rounded-full blur-sm opacity-60'></div>
+                  <div className='absolute inset-0 bg-linear-to-b from-white via-indigo-300 to-indigo-600 rounded-full'></div>
                 </div>
               </div>
-              <div className="max-w-[85%] rounded-2xl p-3 bg-muted text-[#10182B]">
-                <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-[#735FE3]" />
-                  <p className="body-2-regular text-[#10182B]">Escribiendo respuesta...</p>
+              <div className='max-w-[85%] rounded-2xl p-3 bg-muted text-[#10182B]'>
+                <div className='flex items-center gap-2'>
+                  <Loader2 className='w-4 h-4 animate-spin text-[#735FE3]' />
+                  <p className='body-2-regular text-[#10182B]'>Escribiendo respuesta...</p>
                 </div>
               </div>
             </div>
@@ -138,53 +138,62 @@ export function ChatBot({
       {/* Input Area - Only show when not collapsed */}
       {!collapsed && (
         <>
-          <div className="h-px bg-gray-200/50" />
-          <div className="p-4">
+          <div className='h-px bg-gray-200/50' />
+          <div className='p-4'>
             {messages.length === 0 && (
-              <div className="flex items-end gap-2 mb-4">
-                <div className="shrink-0">
-                  <div className="w-8 h-8 relative">
-                    <div className="absolute inset-0 bg-linear-to-b from-white via-indigo-200 to-indigo-500 rounded-full blur-sm opacity-60"></div>
-                    <div className="absolute inset-0 bg-linear-to-b from-white via-indigo-300 to-indigo-600 rounded-full"></div>
+              <div className='flex items-end gap-2 mb-4'>
+                <div className='shrink-0'>
+                  <div className='w-8 h-8 relative'>
+                    <div className='absolute inset-0 bg-linear-to-b from-white via-indigo-200 to-indigo-500 rounded-full blur-sm opacity-60'></div>
+                    <div className='absolute inset-0 bg-linear-to-b from-white via-indigo-300 to-indigo-600 rounded-full'></div>
                   </div>
                 </div>
-                <div className="max-w-[85%] rounded-2xl p-3 bg-muted text-[#10182B]">
+                <div className='max-w-[85%] rounded-2xl p-3 bg-muted text-[#10182B]'>
                   {isGenerating ? (
-                    <div className="flex items-center gap-1">
-                      <span className="w-2 h-2 bg-[#735FE3] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <span className="w-2 h-2 bg-[#735FE3] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <span className="w-2 h-2 bg-[#735FE3] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <div className='flex items-center gap-1'>
+                      <span
+                        className='w-2 h-2 bg-[#735FE3] rounded-full animate-bounce'
+                        style={{ animationDelay: '0ms' }}
+                      />
+                      <span
+                        className='w-2 h-2 bg-[#735FE3] rounded-full animate-bounce'
+                        style={{ animationDelay: '150ms' }}
+                      />
+                      <span
+                        className='w-2 h-2 bg-[#735FE3] rounded-full animate-bounce'
+                        style={{ animationDelay: '300ms' }}
+                      />
                     </div>
                   ) : (
                     <>
-                      <h4 className="body-1-medium text-[#10182B] mb-2">{welcomeMessage.title}</h4>
-                      <p className="body-2-regular text-[#10182B]">{welcomeMessage.content}</p>
+                      <h4 className='body-1-medium text-[#10182B] mb-2'>{welcomeMessage.title}</h4>
+                      <p className='body-2-regular text-[#10182B]'>{welcomeMessage.content}</p>
                     </>
                   )}
                 </div>
               </div>
             )}
-            <div className="relative">
+            <div className='relative'>
               <input
                 ref={chatInputRef}
-                type="text"
+                type='text'
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 disabled={isGenerating || disabled}
-                className="w-full h-14 rounded-xl border border-gray-200 fill-primary px-4 pr-12 text-sm text-[#2C2C2C] placeholder:text-[#2C2C2C]/60 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-md"
+                className='w-full h-14 rounded-xl border border-gray-200 fill-primary px-4 pr-12 text-sm text-[#2C2C2C] placeholder:text-[#2C2C2C]/60 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-md'
               />
               <button
-                type="button"
+                type='button'
                 onClick={handleSendMessage}
                 disabled={isChatGenerating || disabled || !chatInput.trim()}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#735FE3] rounded-lg hover:bg-[#735FE3]/90 disabled:opacity-50 cursor-pointer"
+                className='absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#735FE3] rounded-lg hover:bg-[#735FE3]/90 disabled:opacity-50 cursor-pointer'
               >
-                <Send className="w-4 h-4 text-white" />
+                <Send className='w-4 h-4 text-white' />
               </button>
             </div>
-            <p className="text-xs text-[#47566C]/60 mt-2 text-center">
+            <p className='text-xs text-[#47566C]/60 mt-2 text-center'>
               Alizia puede equivocarse. Siempre verificá la información importante antes de tomar decisiones.
             </p>
           </div>

@@ -28,10 +28,7 @@ describe('ClassCard', () => {
 
   it('falls back to "Clase N" when coord class title is empty', () => {
     render(
-      <ClassCard
-        plan={{ ...basePlan, coord_class: { ...basePlan.coord_class, title: '' } }}
-        onClick={() => {}}
-      />,
+      <ClassCard plan={{ ...basePlan, coord_class: { ...basePlan.coord_class, title: '' } }} onClick={() => {}} />,
     );
     expect(screen.getAllByText('Clase 3').length).toBeGreaterThan(0);
   });

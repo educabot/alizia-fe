@@ -71,35 +71,39 @@ export function Onboarding() {
   const progress = ((currentIdx + 1) / steps.length) * 100;
 
   return (
-    <div className="fixed inset-0 z-50 gradient-background flex flex-col">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-linear-to-br from-[#DAD5F6]/10 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-linear-to-br from-[#01ceaa]/10 to-transparent rounded-full blur-3xl" />
+    <div className='fixed inset-0 z-50 gradient-background flex flex-col'>
+      <div className='absolute inset-0 overflow-hidden pointer-events-none'>
+        <div className='absolute top-20 left-20 w-96 h-96 bg-linear-to-br from-[#DAD5F6]/10 to-transparent rounded-full blur-3xl' />
+        <div className='absolute bottom-20 right-20 w-80 h-80 bg-linear-to-br from-[#01ceaa]/10 to-transparent rounded-full blur-3xl' />
       </div>
 
-      <div className="relative flex-1 overflow-y-auto py-8 px-6">
-        <div className="max-w-lg mx-auto pb-24">
-          <Progress value={progress} className="mb-8 h-2" />
+      <div className='relative flex-1 overflow-y-auto py-8 px-6'>
+        <div className='max-w-lg mx-auto pb-24'>
+          <Progress value={progress} className='mb-8 h-2' />
 
           {/* Welcome */}
           {step === 'welcome' && (
-            <div className="text-center space-y-6 pt-12">
-              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <span className="text-3xl">👋</span>
+            <div className='text-center space-y-6 pt-12'>
+              <div className='w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto'>
+                <span className='text-3xl'>👋</span>
               </div>
               <div>
-                <h1 className="title-2-bold text-[#2C2C2C]">Bienvenido a {orgConfig.visual_identity?.platform_name || 'Alizia'}</h1>
-                <p className="body-2-regular text-gray-600 mt-2">
-                  Vamos a configurar tu perfil en unos pocos pasos.
-                </p>
+                <h1 className='title-2-bold text-[#2C2C2C]'>
+                  Bienvenido a {orgConfig.visual_identity?.platform_name || 'Alizia'}
+                </h1>
+                <p className='body-2-regular text-gray-600 mt-2'>Vamos a configurar tu perfil en unos pocos pasos.</p>
               </div>
-              <Button onClick={goToNextStep} className="gap-2 cursor-pointer">
+              <Button onClick={goToNextStep} className='gap-2 cursor-pointer'>
                 Comenzar
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className='w-4 h-4' />
               </Button>
               {allowSkip && (
                 <div>
-                  <button type="button" onClick={handleSkip} className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">
+                  <button
+                    type='button'
+                    onClick={handleSkip}
+                    className='text-sm text-gray-500 hover:text-gray-700 cursor-pointer'
+                  >
                     Omitir por ahora
                   </button>
                 </div>
@@ -109,20 +113,14 @@ export function Onboarding() {
 
           {/* Profile */}
           {step === 'profile' && (
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="title-2-bold text-[#2C2C2C]">Tu perfil</h2>
-                <p className="body-2-regular text-gray-600">
-                  Completa estos datos para personalizar tu experiencia.
-                </p>
+            <div className='space-y-6'>
+              <div className='space-y-2'>
+                <h2 className='title-2-bold text-[#2C2C2C]'>Tu perfil</h2>
+                <p className='body-2-regular text-gray-600'>Completa estos datos para personalizar tu experiencia.</p>
               </div>
 
-              <div className="activity-card-bg rounded-2xl p-6">
-                <ProfileForm
-                  fields={profileFields}
-                  values={profileData}
-                  onChange={handleProfileChange}
-                />
+              <div className='activity-card-bg rounded-2xl p-6'>
+                <ProfileForm fields={profileFields} values={profileData} onChange={handleProfileChange} />
               </div>
             </div>
           )}
@@ -130,11 +128,9 @@ export function Onboarding() {
           {/* Tour */}
           {step === 'tour' && (
             <>
-              <div className="text-center space-y-4 pt-12">
-                <h2 className="title-2-bold text-[#2C2C2C]">Conoce la plataforma</h2>
-                <p className="body-2-regular text-gray-600">
-                  Un breve recorrido por las funciones principales.
-                </p>
+              <div className='text-center space-y-4 pt-12'>
+                <h2 className='title-2-bold text-[#2C2C2C]'>Conoce la plataforma</h2>
+                <p className='body-2-regular text-gray-600'>Un breve recorrido por las funciones principales.</p>
               </div>
               <TourOverlay
                 steps={tourSteps}
@@ -153,19 +149,19 @@ export function Onboarding() {
 
           {/* Done */}
           {step === 'done' && (
-            <div className="text-center space-y-6 pt-12">
-              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className='text-center space-y-6 pt-12'>
+              <div className='w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto'>
+                <CheckCircle className='w-10 h-10 text-green-600' />
               </div>
               <div>
-                <h2 className="title-2-bold text-[#2C2C2C]">Todo listo</h2>
-                <p className="body-2-regular text-gray-600 mt-2">
+                <h2 className='title-2-bold text-[#2C2C2C]'>Todo listo</h2>
+                <p className='body-2-regular text-gray-600 mt-2'>
                   Tu perfil esta configurado. Ya podes empezar a trabajar.
                 </p>
               </div>
-              <Button onClick={handleComplete} disabled={isCompleting} className="gap-2 cursor-pointer">
+              <Button onClick={handleComplete} disabled={isCompleting} className='gap-2 cursor-pointer'>
                 {isCompleting ? 'Ingresando...' : 'Ir al dashboard'}
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className='w-4 h-4' />
               </Button>
             </div>
           )}
@@ -174,18 +170,22 @@ export function Onboarding() {
 
       {/* Footer for profile step */}
       {step === 'profile' && (
-        <div className="relative backdrop-blur-sm">
-          <div className="max-w-lg mx-auto px-6 py-4 flex justify-between items-center">
+        <div className='relative backdrop-blur-sm'>
+          <div className='max-w-lg mx-auto px-6 py-4 flex justify-between items-center'>
             {allowSkip ? (
-              <button type="button" onClick={handleSkip} className="text-sm text-gray-500 hover:text-gray-700 cursor-pointer">
+              <button
+                type='button'
+                onClick={handleSkip}
+                className='text-sm text-gray-500 hover:text-gray-700 cursor-pointer'
+              >
                 Omitir
               </button>
             ) : (
               <div />
             )}
-            <Button onClick={goToNextStep} disabled={!profileValid} className="gap-2 cursor-pointer">
+            <Button onClick={goToNextStep} disabled={!profileValid} className='gap-2 cursor-pointer'>
               Siguiente
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className='w-4 h-4' />
             </Button>
           </div>
         </div>

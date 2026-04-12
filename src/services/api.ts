@@ -43,12 +43,10 @@ export const authApi = {
 // =============================================================================
 
 export const areasApi = {
-  list: (params?: { limit?: number; offset?: number }) =>
-    fetchPaginated<Area>('/areas', params?.limit, params?.offset),
+  list: (params?: { limit?: number; offset?: number }) => fetchPaginated<Area>('/areas', params?.limit, params?.offset),
   getById: (id: number) => apiClient.get<Area>(`/areas/${id}`),
   create: (data: { name: string; description?: string }) => apiClient.post<Area>('/areas', data),
-  update: (id: number, data: { name?: string; description?: string }) =>
-    apiClient.put<Area>(`/areas/${id}`, data),
+  update: (id: number, data: { name?: string; description?: string }) => apiClient.put<Area>(`/areas/${id}`, data),
   delete: (id: number) => apiClient.delete<void>(`/areas/${id}`),
   addCoordinator: (areaId: number, userId: number) =>
     apiClient.post<void>(`/areas/${areaId}/coordinators`, { user_id: userId }),
@@ -77,14 +75,16 @@ export const coursesApi = {
     fetchPaginated<Course>('/courses', params?.limit, params?.offset),
   getById: (id: number) => apiClient.get<Course>(`/courses/${id}`),
   create: (data: { name: string; school_year: number }) => apiClient.post<Course>('/courses', data),
-  getTimeSlots: (courseId: number) =>
-    apiClient.get<PaginatedResponse<TimeSlot>>(`/courses/${courseId}/time-slots`),
-  createTimeSlot: (courseId: number, data: {
-    day_of_week: number;
-    start_time: string;
-    end_time: string;
-    course_subject_ids: number[];
-  }) => apiClient.post<TimeSlot>(`/courses/${courseId}/time-slots`, data),
+  getTimeSlots: (courseId: number) => apiClient.get<PaginatedResponse<TimeSlot>>(`/courses/${courseId}/time-slots`),
+  createTimeSlot: (
+    courseId: number,
+    data: {
+      day_of_week: number;
+      start_time: string;
+      end_time: string;
+      course_subject_ids: number[];
+    },
+  ) => apiClient.post<TimeSlot>(`/courses/${courseId}/time-slots`, data),
 };
 
 // =============================================================================
@@ -152,18 +152,16 @@ export const coordinationDocumentsApi = {
     return fetchPaginated<CoordinationDocument>(query, params?.limit, params?.offset);
   },
   getById: (id: number) => apiClient.get<CoordinationDocument>(`/coordination-documents/${id}`),
-  create: (data: CoordinationDocumentCreate) =>
-    apiClient.post<CoordinationDocument>('/coordination-documents', data),
+  create: (data: CoordinationDocumentCreate) => apiClient.post<CoordinationDocument>('/coordination-documents', data),
   update: (id: number, data: CoordinationDocumentUpdate) =>
     apiClient.patch<CoordinationDocument>(`/coordination-documents/${id}`, data),
   delete: (id: number) => apiClient.delete<void>(`/coordination-documents/${id}`),
   generate: (id: number, data?: GenerateRequest) =>
-    apiClient.post<{ sections_generated: string[]; class_plans_generated: { subject_id: number; subject_name: string; classes_count: number }[] }>(
-      `/coordination-documents/${id}/generate`,
-      data ?? {},
-    ),
-  chat: (id: number, data: ChatRequest) =>
-    apiClient.post<ChatResponse>(`/coordination-documents/${id}/chat`, data),
+    apiClient.post<{
+      sections_generated: string[];
+      class_plans_generated: { subject_id: number; subject_name: string; classes_count: number }[];
+    }>(`/coordination-documents/${id}/generate`, data ?? {}),
+  chat: (id: number, data: ChatRequest) => apiClient.post<ChatResponse>(`/coordination-documents/${id}/chat`, data),
 };
 
 // =============================================================================
@@ -175,16 +173,14 @@ export const lessonPlansApi = {
     apiClient.get<PaginatedResponse<LessonPlan>>(`/course-subjects/${courseSubjectId}/lesson-plans`),
   getById: (id: number) => apiClient.get<LessonPlan>(`/lesson-plans/${id}`),
   create: (data: LessonPlanCreate) => apiClient.post<LessonPlan>('/lesson-plans', data),
-  update: (id: number, data: Partial<LessonPlanCreate>) =>
-    apiClient.patch<LessonPlan>(`/lesson-plans/${id}`, data),
+  update: (id: number, data: Partial<LessonPlanCreate>) => apiClient.patch<LessonPlan>(`/lesson-plans/${id}`, data),
   delete: (id: number) => apiClient.delete<void>(`/lesson-plans/${id}`),
   generateActivity: (id: number, data: GenerateActivityRequest) =>
     apiClient.post<{ moment: MomentKey; activity_id: number; content: string }>(
       `/lesson-plans/${id}/generate-activity`,
       data,
     ),
-  updateStatus: (id: number, status: string) =>
-    apiClient.patch<LessonPlan>(`/lesson-plans/${id}/status`, { status }),
+  updateStatus: (id: number, status: string) => apiClient.patch<LessonPlan>(`/lesson-plans/${id}/status`, { status }),
 };
 
 // =============================================================================
@@ -265,8 +261,7 @@ export const notificationsApi = {
 // =============================================================================
 
 export const dashboardApi = {
-  getCoordinator: () =>
-    apiClient.get<{ planning_progress: PlanningProgress[] }>('/dashboard/coordinator'),
+  getCoordinator: () => apiClient.get<{ planning_progress: PlanningProgress[] }>('/dashboard/coordinator'),
   getTeacher: () =>
     apiClient.get<{ pending_plans_count: number; upcoming_classes_count: number }>('/dashboard/teacher'),
 };

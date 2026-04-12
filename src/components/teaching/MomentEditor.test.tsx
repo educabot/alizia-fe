@@ -14,8 +14,8 @@ describe('MomentEditor', () => {
   it('renders label and add button', () => {
     render(
       <MomentEditor
-        momentKey="apertura"
-        label="Apertura"
+        momentKey='apertura'
+        label='Apertura'
         selectedActivityIds={[]}
         availableActivities={ACTIVITIES}
         onActivitiesChange={vi.fn()}
@@ -29,8 +29,8 @@ describe('MomentEditor', () => {
   it('renders selected activity chips', () => {
     render(
       <MomentEditor
-        momentKey="apertura"
-        label="Apertura"
+        momentKey='apertura'
+        label='Apertura'
         selectedActivityIds={[1, 2]}
         availableActivities={ACTIVITIES}
         onActivitiesChange={vi.fn()}
@@ -47,8 +47,8 @@ describe('MomentEditor', () => {
 
     render(
       <MomentEditor
-        momentKey="apertura"
-        label="Apertura"
+        momentKey='apertura'
+        label='Apertura'
         selectedActivityIds={[1, 2]}
         availableActivities={ACTIVITIES}
         onActivitiesChange={onChange}
@@ -58,7 +58,7 @@ describe('MomentEditor', () => {
     // Click the X button on "Lluvia de ideas"
     const removeButtons = screen.getAllByRole('button');
     // First removable button (after the "Agregar" link)
-    const xButtons = removeButtons.filter(btn => btn.querySelector('svg.lucide-x'));
+    const xButtons = removeButtons.filter((btn) => btn.querySelector('svg.lucide-x'));
     await user.click(xButtons[0]);
 
     expect(onChange).toHaveBeenCalledWith([2]);
@@ -67,8 +67,8 @@ describe('MomentEditor', () => {
   it('shows count when maxActivities is set', () => {
     render(
       <MomentEditor
-        momentKey="apertura"
-        label="Apertura"
+        momentKey='apertura'
+        label='Apertura'
         selectedActivityIds={[1]}
         availableActivities={ACTIVITIES}
         onActivitiesChange={vi.fn()}
@@ -111,11 +111,14 @@ describe('validateMoments', () => {
   });
 
   it('fails when desarrollo exceeds max', () => {
-    const result = validateMoments({
-      apertura: [1],
-      desarrollo: [10, 11, 12, 13],
-      cierre: [20],
-    }, 3);
+    const result = validateMoments(
+      {
+        apertura: [1],
+        desarrollo: [10, 11, 12, 13],
+        cierre: [20],
+      },
+      3,
+    );
     expect(result.valid).toBe(false);
     expect(result.errors).toContain('Desarrollo puede tener maximo 3 actividades');
   });

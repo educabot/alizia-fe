@@ -18,7 +18,7 @@ export function CourseOverview({ course, subjectCount, onClick, className }: Cou
 
   return (
     <div
-      role="button"
+      role='button'
       tabIndex={0}
       onClick={onClick}
       onKeyDown={handleKeyDown}
@@ -27,10 +27,10 @@ export function CourseOverview({ course, subjectCount, onClick, className }: Cou
         className,
       )}
     >
-      <h4 className="text-sm font-medium text-gray-900">{course.name}</h4>
-      <p className="text-xs text-gray-500 mt-0.5">Ciclo {course.school_year}</p>
+      <h4 className='text-sm font-medium text-gray-900'>{course.name}</h4>
+      <p className='text-xs text-gray-500 mt-0.5'>Ciclo {course.school_year}</p>
       {typeof subjectCount === 'number' && (
-        <p className="text-xs text-gray-400 mt-1">
+        <p className='text-xs text-gray-400 mt-1'>
           {subjectCount} {subjectCount === 1 ? 'materia' : 'materias'}
         </p>
       )}

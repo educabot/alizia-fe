@@ -24,7 +24,7 @@ describe('ChatPanel', () => {
   it('renders welcome message', () => {
     render(
       <ChatPanel
-        entityType="coordination-document"
+        entityType='coordination-document'
         entityId={1}
         welcomeMessage={{ title: 'Hola', content: 'Soy Alizia' }}
       />,
@@ -35,12 +35,7 @@ describe('ChatPanel', () => {
   });
 
   it('renders input field with placeholder', () => {
-    render(
-      <ChatPanel
-        entityType="general"
-        placeholder="Escribi algo..."
-      />,
-    );
+    render(<ChatPanel entityType='general' placeholder='Escribi algo...' />);
 
     expect(screen.getByPlaceholderText('Escribi algo...')).toBeInTheDocument();
   });
@@ -49,19 +44,17 @@ describe('ChatPanel', () => {
     const user = userEvent.setup();
     const { coordinationDocumentsApi } = await import('@/services/api');
 
-    render(
-      <ChatPanel
-        entityType="coordination-document"
-        entityId={42}
-      />,
-    );
+    render(<ChatPanel entityType='coordination-document' entityId={42} />);
 
     const input = screen.getByPlaceholderText(/escribi tu mensaje/i);
     await user.type(input, 'Hola Alizia{enter}');
 
-    expect(coordinationDocumentsApi.chat).toHaveBeenCalledWith(42, expect.objectContaining({
-      message: 'Hola Alizia',
-    }));
+    expect(coordinationDocumentsApi.chat).toHaveBeenCalledWith(
+      42,
+      expect.objectContaining({
+        message: 'Hola Alizia',
+      }),
+    );
   });
 
   it('calls onEntityUpdated when document_updated is true', async () => {
@@ -73,13 +66,7 @@ describe('ChatPanel', () => {
     });
 
     const onEntityUpdated = vi.fn();
-    render(
-      <ChatPanel
-        entityType="coordination-document"
-        entityId={1}
-        onEntityUpdated={onEntityUpdated}
-      />,
-    );
+    render(<ChatPanel entityType='coordination-document' entityId={1} onEntityUpdated={onEntityUpdated} />);
 
     const input = screen.getByPlaceholderText(/escribi tu mensaje/i);
     await user.type(input, 'Cambia algo{enter}');
@@ -94,13 +81,7 @@ describe('ChatPanel', () => {
     const user = userEvent.setup();
 
     const onEntityUpdated = vi.fn();
-    render(
-      <ChatPanel
-        entityType="coordination-document"
-        entityId={1}
-        onEntityUpdated={onEntityUpdated}
-      />,
-    );
+    render(<ChatPanel entityType='coordination-document' entityId={1} onEntityUpdated={onEntityUpdated} />);
 
     const input = screen.getByPlaceholderText(/escribi tu mensaje/i);
     await user.type(input, 'Solo una pregunta{enter}');
@@ -115,15 +96,15 @@ describe('ChatPanel', () => {
     const user = userEvent.setup();
     const { chatApi } = await import('@/services/api');
 
-    render(
-      <ChatPanel entityType="general" />
-    );
+    render(<ChatPanel entityType='general' />);
 
     const input = screen.getByPlaceholderText(/escribi tu mensaje/i);
     await user.type(input, 'Pregunta general{enter}');
 
-    expect(chatApi.send).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Pregunta general',
-    }));
+    expect(chatApi.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Pregunta general',
+      }),
+    );
   });
 });

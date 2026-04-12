@@ -1,15 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { useReferenceStore } from '@/store/referenceStore';
+import { createTestQueryClient } from '@/test-utils';
+import { referenceKeys } from '@/hooks/queries/useReferenceQueries';
 import { TeacherCourseSubject } from './TeacherCourseSubject';
-import type {
-  Course,
-  CourseSubject,
-  Subject,
-  Area,
-  LessonPlan,
-} from '@/types';
+import type { Course, CourseSubject, Subject, Area, LessonPlan } from '@/types';
 
 const listByCourseSubjectMock = vi.fn();
 vi.mock('@/services/api', () => ({
@@ -19,17 +15,11 @@ vi.mock('@/services/api', () => ({
   courseSubjectsApi: {},
 }));
 
-const mockCourses: Course[] = [
-  { id: 10, name: '1A', school_year: 2026, created_at: '2026-01-01' },
-];
+const mockCourses: Course[] = [{ id: 10, name: '1A', school_year: 2026, created_at: '2026-01-01' }];
 
-const mockAreas: Area[] = [
-  { id: 100, name: 'Matematicas', created_at: '2026-01-01' },
-];
+const mockAreas: Area[] = [{ id: 100, name: 'Matematicas', created_at: '2026-01-01' }];
 
-const mockSubjects: Subject[] = [
-  { id: 200, name: 'Algebra', area_id: 100, created_at: '2026-01-01' },
-];
+const mockSubjects: Subject[] = [{ id: 200, name: 'Algebra', area_id: 100, created_at: '2026-01-01' }];
 
 const mockCourseSubjects: CourseSubject[] = [
   {
@@ -69,24 +59,27 @@ const mockLessonPlans: LessonPlan[] = [
   },
 ];
 
+let queryClient: ReturnType<typeof createTestQueryClient>;
+
 function renderPage(csId = '1') {
   return render(
-    <MemoryRouter initialEntries={[`/teacher/courses/${csId}`]}>
-      <Routes>
-        <Route path="/teacher/courses/:id" element={<TeacherCourseSubject />} />
-      </Routes>
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={[`/teacher/courses/${csId}`]}>
+        <Routes>
+          <Route path='/teacher/courses/:id' element={<TeacherCourseSubject />} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
 describe('TeacherCourseSubject page', () => {
   beforeEach(() => {
-    useReferenceStore.setState({
-      courses: mockCourses,
-      courseSubjects: mockCourseSubjects,
-      subjects: mockSubjects,
-      areas: mockAreas,
-    });
+    queryClient = createTestQueryClient();
+    queryClient.setQueryData(referenceKeys.courses, mockCourses);
+    queryClient.setQueryData(referenceKeys.courseSubjects, mockCourseSubjects);
+    queryClient.setQueryData(referenceKeys.subjects, mockSubjects);
+    queryClient.setQueryData(referenceKeys.areas, mockAreas);
     listByCourseSubjectMock.mockResolvedValue({ items: mockLessonPlans, more: false });
   });
 

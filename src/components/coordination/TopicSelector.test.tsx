@@ -7,16 +7,10 @@ import type { Topic, OrgConfig } from '@/types';
 // TopicTree is tested in isolation elsewhere; mock it to a thin stub so we
 // can focus on the TopicSelector's own behavior (label, counter, empty state).
 vi.mock('@/components/ui/TopicTree', () => ({
-  TopicTree: ({
-    topics,
-    selected,
-  }: {
-    topics: Topic[];
-    selected: number[];
-  }) => (
-    <div data-testid="topic-tree">
-      <span data-testid="topic-tree-count">{topics.length}</span>
-      <span data-testid="topic-tree-selected">{selected.join(',')}</span>
+  TopicTree: ({ topics, selected }: { topics: Topic[]; selected: number[] }) => (
+    <div data-testid='topic-tree'>
+      <span data-testid='topic-tree-count'>{topics.length}</span>
+      <span data-testid='topic-tree-selected'>{selected.join(',')}</span>
     </div>
   ),
 }));
@@ -60,14 +54,7 @@ describe('TopicSelector', () => {
   });
 
   it('shows a custom label', () => {
-    render(
-      <TopicSelector
-        topics={mockTopics}
-        selected={[]}
-        onSelect={() => {}}
-        label="Nucleos problematicos"
-      />,
-    );
+    render(<TopicSelector topics={mockTopics} selected={[]} onSelect={() => {}} label='Nucleos problematicos' />);
     expect(screen.getByText('Nucleos problematicos')).toBeInTheDocument();
   });
 
@@ -94,14 +81,7 @@ describe('TopicSelector', () => {
   });
 
   it('renders the help text when provided', () => {
-    render(
-      <TopicSelector
-        topics={mockTopics}
-        selected={[]}
-        onSelect={() => {}}
-        helpText="Elegi al menos uno"
-      />,
-    );
+    render(<TopicSelector topics={mockTopics} selected={[]} onSelect={() => {}} helpText='Elegi al menos uno' />);
     expect(screen.getByText('Elegi al menos uno')).toBeInTheDocument();
   });
 });

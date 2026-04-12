@@ -41,29 +41,29 @@ export function TopicSelector({
   const hasTopics = topics.length > 0;
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-[#10182B]">{label}</label>
+    <div className='space-y-2'>
+      <div className='flex items-center justify-between'>
+        <label className='text-sm font-medium text-[#10182B]'>{label}</label>
         {selected.length > 0 && (
           <span
-            className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full"
-            data-testid="topic-selector-counter"
+            className='text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full'
+            data-testid='topic-selector-counter'
           >
             {selected.length} seleccionados
           </span>
         )}
       </div>
 
-      {helpText && <p className="text-xs text-muted-foreground">{helpText}</p>}
+      {helpText && <p className='text-xs text-muted-foreground'>{helpText}</p>}
 
       {!hasTopics ? (
-        <div className="activity-card-bg rounded-2xl p-6 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className='activity-card-bg rounded-2xl p-6 text-center'>
+          <p className='text-sm text-muted-foreground'>
             No hay {selectionLevelName.toLowerCase()}s disponibles para seleccionar.
           </p>
         </div>
       ) : (
-        <div className="activity-card-bg p-4 rounded-2xl">
+        <div className='activity-card-bg p-4 rounded-2xl'>
           <TopicTree
             topics={topics}
             maxLevels={orgConfig.topic_max_levels}

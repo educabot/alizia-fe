@@ -20,7 +20,12 @@ describe('PendingPlansCard', () => {
   it('counts and lists pending plans (id null or not published)', () => {
     const plans: LessonPlan[] = [
       makePlan({ id: null, class_number: 1, coord_class: { title: 'Intro', objective: '', topics: [] } }),
-      makePlan({ id: 2, class_number: 2, status: 'in_progress', coord_class: { title: 'Fracciones', objective: '', topics: [] } }),
+      makePlan({
+        id: 2,
+        class_number: 2,
+        status: 'in_progress',
+        coord_class: { title: 'Fracciones', objective: '', topics: [] },
+      }),
       makePlan({ id: 3, class_number: 3, status: 'published' }),
     ];
     render(<PendingPlansCard plans={plans} />);

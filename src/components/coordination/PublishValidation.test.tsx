@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import {
-  PublishValidation,
-  validateDocumentForPublish,
-  canPublishDocument,
-} from './PublishValidation';
+import { PublishValidation, validateDocumentForPublish, canPublishDocument } from './PublishValidation';
 import type { CoordinationDocument, SectionConfig } from '@/types';
 
 const sectionConfigs: SectionConfig[] = [

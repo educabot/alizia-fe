@@ -27,13 +27,36 @@ export class AuthError extends APIError {
 }
 
 // =============================================================================
-// Token management (en memoria, no localStorage)
+// Token management (sessionStorage — sobrevive al F5, muere al cerrar pestaña)
+// RFC §4.1 prohibe localStorage; sessionStorage cumple "no persistido a disco".
 // =============================================================================
 
-let authToken: string | null = null;
+const TOKEN_STORAGE_KEY = 'alizia_auth_token';
+
+function readStoredToken(): string | null {
+  if (typeof sessionStorage === 'undefined') return null;
+  try {
+    return sessionStorage.getItem(TOKEN_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredToken(token: string | null) {
+  if (typeof sessionStorage === 'undefined') return;
+  try {
+    if (token) sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
+    else sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+  } catch {
+    // Quota / privacy mode — silently fall back to in-memory only
+  }
+}
+
+let authToken: string | null = readStoredToken();
 
 export function setAuthToken(token: string | null) {
   authToken = token;
+  writeStoredToken(token);
 }
 
 export function getAuthToken(): string | null {
@@ -121,21 +144,14 @@ export const apiClient = {
       body: JSON.stringify(data),
     }),
 
-  delete: <T>(endpoint: string) =>
-    request<T>(endpoint, { method: 'DELETE' }),
+  delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
 };
 
 // =============================================================================
 // Pagination helper
 // =============================================================================
 
-export async function fetchPaginated<T>(
-  endpoint: string,
-  limit = 20,
-  offset = 0,
-): Promise<PaginatedResponse<T>> {
+export async function fetchPaginated<T>(endpoint: string, limit = 20, offset = 0): Promise<PaginatedResponse<T>> {
   const separator = endpoint.includes('?') ? '&' : '?';
-  return apiClient.get<PaginatedResponse<T>>(
-    `${endpoint}${separator}limit=${limit}&offset=${offset}`,
-  );
+  return apiClient.get<PaginatedResponse<T>>(`${endpoint}${separator}limit=${limit}&offset=${offset}`);
 }

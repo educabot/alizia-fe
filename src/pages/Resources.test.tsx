@@ -1,15 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
-import { useResourceStore } from '@/store/resourceStore';
-import { useReferenceStore } from '@/store/referenceStore';
+import { createTestQueryClient } from '@/test-utils';
+import { resourceKeys } from '@/hooks/queries/useResourceQueries';
+import { referenceKeys } from '@/hooks/queries/useReferenceQueries';
 import { Resources } from './Resources';
 import type { Resource, CourseSubject } from '@/types';
 
-const listResourcesMock = vi.fn();
 vi.mock('@/services/api', () => ({
   resourcesApi: {
-    list: (...args: unknown[]) => listResourcesMock(...args),
+    list: vi.fn().mockResolvedValue({ items: [], more: false }),
     delete: vi.fn(),
   },
   resourceTypesApi: {
@@ -67,19 +68,24 @@ const mockCourseSubjects: CourseSubject[] = [
   },
 ];
 
+let queryClient: ReturnType<typeof createTestQueryClient>;
+
 function renderResources() {
   return render(
-    <MemoryRouter>
-      <Resources />
-    </MemoryRouter>,
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <Resources />
+      </MemoryRouter>
+    </QueryClientProvider>,
   );
 }
 
 describe('Resources page', () => {
   beforeEach(() => {
-    useResourceStore.setState({ resources: mockResources });
-    useReferenceStore.setState({ courseSubjects: mockCourseSubjects, subjects: [] });
-    listResourcesMock.mockResolvedValue({ items: mockResources, more: false });
+    queryClient = createTestQueryClient();
+    queryClient.setQueryData(resourceKeys.all, mockResources);
+    queryClient.setQueryData(referenceKeys.courseSubjects, mockCourseSubjects);
+    queryClient.setQueryData(referenceKeys.subjects, []);
   });
 
   it('shows the page title', async () => {
@@ -88,12 +94,9 @@ describe('Resources page', () => {
   });
 
   it('shows empty state when there are no resources', async () => {
-    useResourceStore.setState({ resources: [] });
-    listResourcesMock.mockResolvedValueOnce({ items: [], more: false });
+    queryClient.setQueryData(resourceKeys.all, []);
     renderResources();
-    await waitFor(() => {
-      expect(screen.getByText('Sin recursos creados')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Sin recursos creados')).toBeInTheDocument();
   });
 
   it('renders the create resource button', async () => {
@@ -103,9 +106,7 @@ describe('Resources page', () => {
 
   it('lists the resources', async () => {
     renderResources();
-    await waitFor(() => {
-      expect(screen.getByText('Guia Algebra')).toBeInTheDocument();
-      expect(screen.getByText('Guia Fisica')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Guia Algebra')).toBeInTheDocument();
+    expect(screen.getByText('Guia Fisica')).toBeInTheDocument();
   });
 });

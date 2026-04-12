@@ -31,7 +31,7 @@ describe('SubjectClassConfig — class_count mode', () => {
         onChange={() => {}}
         availableTopicIds={[]}
         topics={topics}
-        mode="class_count"
+        mode='class_count'
       />,
     );
     expect(screen.getByTestId('class-count-1')).toHaveTextContent('3');
@@ -49,13 +49,11 @@ describe('SubjectClassConfig — class_count mode', () => {
         onChange={onChange}
         availableTopicIds={[]}
         topics={topics}
-        mode="class_count"
+        mode='class_count'
       />,
     );
     fireEvent.click(screen.getByLabelText('Sumar clase a Algebra'));
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ 1: { class_count: 3, topic_ids: [] } }),
-    );
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ 1: { class_count: 3, topic_ids: [] } }));
   });
 
   it('decrements class_count but not below 0', () => {
@@ -67,13 +65,11 @@ describe('SubjectClassConfig — class_count mode', () => {
         onChange={onChange}
         availableTopicIds={[]}
         topics={topics}
-        mode="class_count"
+        mode='class_count'
       />,
     );
     fireEvent.click(screen.getByLabelText('Restar clase a Algebra'));
-    expect(onChange).toHaveBeenCalledWith(
-      expect.objectContaining({ 1: { class_count: 0, topic_ids: [] } }),
-    );
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ 1: { class_count: 0, topic_ids: [] } }));
   });
 
   it('minus button is disabled when count is 0', () => {
@@ -84,7 +80,7 @@ describe('SubjectClassConfig — class_count mode', () => {
         onChange={() => {}}
         availableTopicIds={[]}
         topics={topics}
-        mode="class_count"
+        mode='class_count'
       />,
     );
     expect(screen.getByLabelText('Restar clase a Algebra')).toBeDisabled();
@@ -103,7 +99,7 @@ describe('SubjectClassConfig — topics mode', () => {
         onChange={() => {}}
         availableTopicIds={[100, 101]}
         topics={topics}
-        mode="topics"
+        mode='topics'
       />,
     );
     // Each subject renders both topic buttons -> 4 total
@@ -123,7 +119,7 @@ describe('SubjectClassConfig — topics mode', () => {
         onChange={onChange}
         availableTopicIds={[100]}
         topics={topics}
-        mode="topics"
+        mode='topics'
       />,
     );
     // First Ecuaciones button corresponds to Algebra (subject 1)
@@ -147,7 +143,7 @@ describe('SubjectClassConfig — topics mode', () => {
         onChange={onChange}
         availableTopicIds={[100]}
         topics={topics}
-        mode="topics"
+        mode='topics'
       />,
     );
     fireEvent.click(screen.getAllByText('Ecuaciones')[0]);
@@ -166,7 +162,7 @@ describe('SubjectClassConfig — topics mode', () => {
         onChange={() => {}}
         availableTopicIds={[]}
         topics={topics}
-        mode="topics"
+        mode='topics'
       />,
     );
     expect(screen.getAllByText(/paso anterior/i)).toHaveLength(2);

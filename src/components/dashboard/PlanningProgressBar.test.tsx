@@ -25,9 +25,7 @@ describe('PlanningProgressBar', () => {
 
   it('renders 0/0 without error', () => {
     render(
-      <PlanningProgressBar
-        progress={{ course_subject_id: 1, course_subject_name: 'Vacia', completed: 0, total: 0 }}
-      />,
+      <PlanningProgressBar progress={{ course_subject_id: 1, course_subject_name: 'Vacia', completed: 0, total: 0 }} />,
     );
 
     expect(screen.getByText('0/0')).toBeInTheDocument();
