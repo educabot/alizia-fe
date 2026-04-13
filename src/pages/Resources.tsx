@@ -1,29 +1,34 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, FileText, Trash2 } from 'lucide-react';
-import { useResourcesQuery, useDeleteResourceMutation } from '@/hooks/queries/useResourceQueries';
-import { useSubjectsQuery, useCourseSubjectsQuery } from '@/hooks/queries/useReferenceQueries';
+import { useDeleteResourceMutation } from '@/hooks/queries/useResourceQueries';
+import { useCourseSubjectsQuery } from '@/hooks/queries/useReferenceQueries';
+import { usePaginatedList } from '@/hooks/usePaginatedList';
+import { resourcesApi } from '@/services/api';
 import { useNomenclature } from '@/hooks/useOrgConfig';
 import { ResourceCard } from '@/components/resources/ResourceCard';
+import { DataState } from '@/components/DataState';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import type { Resource } from '@/types';
 
 export function Resources() {
   const navigate = useNavigate();
-  const { data: resources = [], isLoading } = useResourcesQuery();
   const deleteResourceMutation = useDeleteResourceMutation();
-  const { data: subjects = [] } = useSubjectsQuery();
   const { data: courseSubjects = [] } = useCourseSubjectsQuery();
   const resourcePluralLabel = useNomenclature('resource_plural');
 
   const [filterSubjectId, setFilterSubjectId] = useState<number | null>(null);
+
+  const { items: resources, hasMore, loadMore, isLoading, isLoadingMore, error, reload } = usePaginatedList(
+    (limit, offset) => resourcesApi.list({ limit, offset }),
+  );
 
   const handleDelete = async (resource: Resource, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!confirm(`Eliminar "${resource.title}"?`)) return;
     try {
       await deleteResourceMutation.mutateAsync(resource.id);
+      await reload();
     } catch (error) {
       console.error('Error deleting resource:', error);
     }
@@ -81,29 +86,25 @@ export function Resources() {
       )}
 
       {/* Grid */}
-      {isLoading ? (
-        <div className='grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4'>
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className='bg-white rounded-2xl p-4 border border-gray-200'>
-              <Skeleton className='h-5 w-3/4 mb-3' />
-              <Skeleton className='h-4 w-1/2 mb-4' />
-              <Skeleton className='h-6 w-20' />
-            </div>
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className='text-center py-16 activity-card-bg rounded-2xl'>
-          <FileText className='w-12 h-12 text-muted-foreground mx-auto mb-4' />
-          <h3 className='headline-1-bold text-foreground mb-2'>
-            {resources.length === 0 ? 'Sin recursos creados' : 'Sin resultados'}
-          </h3>
-          <p className='body-2-regular text-muted-foreground'>
-            {resources.length === 0
-              ? 'Haz clic en "Crear recurso" para comenzar'
-              : 'Prueba cambiar el filtro de materia'}
-          </p>
-        </div>
-      ) : (
+      <DataState
+        loading={isLoading}
+        error={error}
+        data={filtered}
+        onRetry={reload}
+        emptyState={
+          <div className='text-center py-16 activity-card-bg rounded-2xl'>
+            <FileText className='w-12 h-12 text-muted-foreground mx-auto mb-4' />
+            <h3 className='headline-1-bold text-foreground mb-2'>
+              {resources.length === 0 ? 'Sin recursos creados' : 'Sin resultados'}
+            </h3>
+            <p className='body-2-regular text-muted-foreground'>
+              {resources.length === 0
+                ? 'Haz clic en "Crear recurso" para comenzar'
+                : 'Prueba cambiar el filtro de materia'}
+            </p>
+          </div>
+        }
+      >
         <div className='grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4'>
           {filtered.map((resource) => (
             <div key={resource.id} className='relative group'>
@@ -117,7 +118,15 @@ export function Resources() {
             </div>
           ))}
         </div>
-      )}
+
+        {hasMore && (
+          <div className='flex justify-center mt-6'>
+            <Button variant='outline' onClick={loadMore} disabled={isLoadingMore}>
+              {isLoadingMore ? 'Cargando...' : 'Cargar mas'}
+            </Button>
+          </div>
+        )}
+      </DataState>
     </div>
   );
 }

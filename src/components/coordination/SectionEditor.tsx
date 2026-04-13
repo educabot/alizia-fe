@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { MarkdownEditor } from '@/components/ui/MarkdownEditor';
 import type { SectionConfig, SectionValue } from '@/types';
 
 interface SectionEditorProps {
@@ -76,7 +77,14 @@ export function SectionEditor({
       )}
 
       {/* Text content */}
-      {isEditing ? (
+      {config.type === 'markdown' ? (
+        <MarkdownEditor
+          value={currentValue}
+          onChange={(val) => onChange({ ...value, value: val })}
+          readOnly={readOnly}
+          placeholder={`Escribi el contenido de ${config.label} en Markdown...`}
+        />
+      ) : isEditing ? (
         <div className='space-y-2'>
           <textarea
             value={draft}

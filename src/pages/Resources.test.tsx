@@ -3,10 +3,10 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { createTestQueryClient } from '@/test-utils';
-import { resourceKeys } from '@/hooks/queries/useResourceQueries';
 import { referenceKeys } from '@/hooks/queries/useReferenceQueries';
 import { Resources } from './Resources';
 import type { Resource, CourseSubject } from '@/types';
+import { resourcesApi } from '@/services/api';
 
 vi.mock('@/services/api', () => ({
   resourcesApi: {
@@ -17,6 +17,8 @@ vi.mock('@/services/api', () => ({
     list: vi.fn().mockResolvedValue({ items: [], more: false }),
   },
 }));
+
+const listMock = resourcesApi.list as ReturnType<typeof vi.fn>;
 
 const mockResources: Resource[] = [
   {
@@ -83,7 +85,7 @@ function renderResources() {
 describe('Resources page', () => {
   beforeEach(() => {
     queryClient = createTestQueryClient();
-    queryClient.setQueryData(resourceKeys.all, mockResources);
+    listMock.mockResolvedValue({ items: mockResources, more: false });
     queryClient.setQueryData(referenceKeys.courseSubjects, mockCourseSubjects);
     queryClient.setQueryData(referenceKeys.subjects, []);
   });
@@ -94,9 +96,11 @@ describe('Resources page', () => {
   });
 
   it('shows empty state when there are no resources', async () => {
-    queryClient.setQueryData(resourceKeys.all, []);
+    listMock.mockResolvedValue({ items: [], more: false });
     renderResources();
-    expect(screen.getByText('Sin recursos creados')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Sin recursos creados')).toBeInTheDocument();
+    });
   });
 
   it('renders the create resource button', async () => {
@@ -106,7 +110,9 @@ describe('Resources page', () => {
 
   it('lists the resources', async () => {
     renderResources();
-    expect(screen.getByText('Guia Algebra')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Guia Algebra')).toBeInTheDocument();
+    });
     expect(screen.getByText('Guia Fisica')).toBeInTheDocument();
   });
 });

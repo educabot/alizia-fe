@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-04-12
 **Commit base:** `5f0bae5` (main, post-migracion TanStack Query)
-**Tests:** 61 archivos / 413 tests verdes
+**Tests:** 61 archivos / 417 tests verdes
 **Metodo:** Lectura directa del codigo contra cada seccion del RFC. Citas con `archivo:linea`.
 
 Leyenda:
@@ -74,7 +74,7 @@ Leyenda:
 | PaginatedResponse<T> | OK (types/index.ts:8-11) |
 | fetchPaginated helper | OK |
 | usePaginatedList hook | OK (hooks/usePaginatedList.ts) |
-| Listados paginados en practica | PARCIAL — hook existe, falta aplicar en listados que cargan solo primera pagina |
+| Listados paginados en practica | OK — AdminAreas, CoordinatorDocuments y Resources usan usePaginatedList |
 
 ### 3.3 State management
 
@@ -146,13 +146,8 @@ Todas alineadas al RFC backend. Ver rfc-alizia-fe.md seccion 3.2 para tabla comp
 
 ## Resumen de gaps pendientes
 
-### Prioridad media
-1. **G-4** — Aplicar paginacion real en listados
-2. **G-2** — Multi-rol en home redirect (sidebar ya multi-rol; home usa rol primario — aceptable)
-
 ### Prioridad baja
-3. **G-5** — Rate limit con cooldown visual diferenciado
-4. **G-6** — Markdown editor real para secciones tipo markdown
+1. **G-2** — Multi-rol en home redirect (sidebar ya multi-rol; home usa rol primario — aceptable)
 
 ---
 
@@ -174,3 +169,6 @@ Todas alineadas al RFC backend. Ver rfc-alizia-fe.md seccion 3.2 para tabla comp
 | G-1 Sin redirect a onboarding | CERRADO — useAuth.handleLogin chequea onboardingApi.getStatus() |
 | G-7 Teaching sin mutations TQ | CERRADO — 4 mutations: create, update, updateStatus, generateActivity |
 | G-3 useNomenclature sin consumidores | CERRADO — 4 paginas usan useNomenclature para titulos |
+| G-4 Sin paginacion real en listados | CERRADO — Resources migrado a usePaginatedList; AdminAreas y CoordinatorDocuments ya lo usaban |
+| G-5 Sin cooldown visual para rate limit | CERRADO — GenerateButton detecta AI_RATE_LIMITED y muestra countdown 30s |
+| G-6 Sin editor markdown para secciones markdown | CERRADO — MarkdownEditor con edit/preview; SectionEditor lo usa para type: 'markdown' |

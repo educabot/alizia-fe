@@ -15,6 +15,7 @@ const SECTION_CONFIGS: SectionConfig[] = [
     required: true,
   },
   { key: 'notes', label: 'Notas adicionales', type: 'text', ai_prompt: '', required: false },
+  { key: 'bibliography', label: 'Bibliografia', type: 'markdown', ai_prompt: '', required: false },
 ];
 
 describe('DynamicSectionRenderer', () => {
@@ -62,6 +63,15 @@ describe('DynamicSectionRenderer', () => {
 
     expect(screen.getByText('El problema central es...')).toBeInTheDocument();
     expect(screen.getByText('Detalle metodologico')).toBeInTheDocument();
+  });
+
+  it('renders markdown editor for markdown-type section', () => {
+    render(<DynamicSectionRenderer sectionConfigs={SECTION_CONFIGS} sections={{}} onSectionChange={vi.fn()} />);
+
+    expect(screen.getByText('Bibliografia')).toBeInTheDocument();
+    // Markdown editor shows edit/preview tabs
+    expect(screen.getByText('Editar')).toBeInTheDocument();
+    expect(screen.getByText('Vista previa')).toBeInTheDocument();
   });
 
   it('shows generating state for specific sections', () => {
