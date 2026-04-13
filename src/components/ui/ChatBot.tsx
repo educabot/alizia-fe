@@ -87,6 +87,7 @@ export function ChatBot({
           onClick={handleToggle}
           className='p-1 text-secondary-foreground transition-colors cursor-pointer rounded'
           title={collapsed ? 'Expandir chat' : 'Colapsar chat'}
+          aria-label={collapsed ? 'Expandir chat' : 'Colapsar chat'}
         >
           <PanelRight />
         </button>
@@ -95,8 +96,8 @@ export function ChatBot({
       {/* Messages Area - Only show when not collapsed */}
       {!collapsed && (
         <div className='flex-1 overflow-y-auto p-4 space-y-4'>
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}>
+          {messages.map((msg, msgIndex) => (
+            <div key={`${msg.role}-${msgIndex}-${msg.content.slice(0, 20)}`} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}>
               {msg.role === 'assistant' && (
                 <div className='shrink-0'>
                   <div className='w-8 h-8 relative'>
@@ -189,6 +190,7 @@ export function ChatBot({
                 onClick={handleSendMessage}
                 disabled={isChatGenerating || disabled || !chatInput.trim()}
                 className='absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#735FE3] rounded-lg hover:bg-[#735FE3]/90 disabled:opacity-50 cursor-pointer'
+                aria-label='Enviar mensaje'
               >
                 <Send className='w-4 h-4 text-white' />
               </button>

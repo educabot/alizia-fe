@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { MOMENT_LABELS } from '@/lib/constants';
 import type { Activity, MomentKey } from '@/types';
 
 interface ActivitySelectorProps {
@@ -13,12 +14,6 @@ interface ActivitySelectorProps {
   onConfirm: (activityIds: number[]) => void;
   maxActivities?: number;
 }
-
-const MOMENT_LABELS: Record<MomentKey, string> = {
-  apertura: 'Apertura',
-  desarrollo: 'Desarrollo',
-  cierre: 'Cierre',
-};
 
 export function ActivitySelector({
   open,

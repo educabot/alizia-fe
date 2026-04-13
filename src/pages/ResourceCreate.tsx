@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, X } from 'lucide-react';
 import { useResourceTypesQuery, useCreateResourceMutation } from '@/hooks/queries/useResourceQueries';
 import { useFontsQuery } from '@/hooks/queries/useReferenceQueries';
+import { showApiError } from '@/lib/toast';
 import { ResourceTypeSelector } from '@/components/resources/ResourceTypeSelector';
 import { FontRequirementSelector } from '@/components/resources/FontRequirementSelector';
 import { Button } from '@/components/ui/button';
@@ -49,7 +50,7 @@ export function ResourceCreate() {
       });
       navigate(`/resources/${resource.id}`, { replace: true });
     } catch (error) {
-      console.error('Error creating resource:', error);
+      showApiError(error);
       setIsCreating(false);
     }
   };

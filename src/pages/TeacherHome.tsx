@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Bell } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useCourseSubjectsQuery } from '@/hooks/queries/useReferenceQueries';
+import { DataState } from '@/components/DataState';
 import { useNomenclature } from '@/hooks/useOrgConfig';
 import { NotificationList } from '@/components/dashboard/NotificationList';
 import { StatsCard } from '@/components/dashboard/StatsCard';
@@ -14,7 +15,7 @@ import type { Notification } from '@/types';
 export function TeacherHome() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
-  const { data: courseSubjects = [] } = useCourseSubjectsQuery();
+  const { data: courseSubjects = [], isLoading, error } = useCourseSubjectsQuery();
   const subjectPluralLabel = useNomenclature('subject_plural');
 
   const firstName = user?.name.split(' ')[0] || '';
@@ -64,12 +65,28 @@ export function TeacherHome() {
         {/* Left: Course subjects */}
         <div>
           <h2 className='headline-1-bold text-[#10182B] mb-4'>{subjectPluralLabel}</h2>
-          {myCourseSubjects.length > 0 ? (
+          <DataState
+            loading={isLoading}
+            error={error}
+            data={myCourseSubjects}
+            emptyState={
+              <div className='text-center py-12 activity-card-bg rounded-2xl'>
+                <BookOpen className='w-12 h-12 text-muted-foreground mx-auto mb-4' />
+                <h3 className='headline-1-bold text-foreground mb-2'>Sin materias asignadas</h3>
+                <p className='body-2-regular text-muted-foreground'>
+                  El coordinador aun no ha asignado materias a tu perfil.
+                </p>
+              </div>
+            }
+          >
             <div className='grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-3'>
               {myCourseSubjects.map((cs) => (
                 <div
                   key={cs.id}
+                  role='button'
+                  tabIndex={0}
                   onClick={() => navigate(`/teacher/courses/${cs.id}`)}
+                  onKeyDown={(e) => e.key === 'Enter' && navigate(`/teacher/courses/${cs.id}`)}
                   className='bg-white border border-[#E4E8EF] rounded-2xl p-4 cursor-pointer transition-all hover:shadow-md hover:border-primary/30 group'
                 >
                   <h4 className='text-sm font-medium text-gray-900 group-hover:text-primary transition-colors'>
@@ -80,15 +97,7 @@ export function TeacherHome() {
                 </div>
               ))}
             </div>
-          ) : (
-            <div className='text-center py-12 activity-card-bg rounded-2xl'>
-              <BookOpen className='w-12 h-12 text-muted-foreground mx-auto mb-4' />
-              <h3 className='headline-1-bold text-foreground mb-2'>Sin materias asignadas</h3>
-              <p className='body-2-regular text-muted-foreground'>
-                El coordinador aun no ha asignado materias a tu perfil.
-              </p>
-            </div>
-          )}
+          </DataState>
         </div>
 
         {/* Right: Upcoming classes + Notifications */}

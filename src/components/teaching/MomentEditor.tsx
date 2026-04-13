@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { X, Plus } from 'lucide-react';
 import { ActivitySelector } from './ActivitySelector';
 import type { Activity, MomentKey } from '@/types';
@@ -12,8 +12,6 @@ interface MomentEditorProps {
   maxActivities?: number;
 }
 
-const allActivitiesMap = new Map<number, Activity>();
-
 export function MomentEditor({
   momentKey,
   label,
@@ -24,10 +22,13 @@ export function MomentEditor({
 }: MomentEditorProps) {
   const [selectorOpen, setSelectorOpen] = useState(false);
 
-  // Build lookup map
-  for (const a of availableActivities) {
-    allActivitiesMap.set(a.id, a);
-  }
+  const activitiesMap = useMemo(() => {
+    const map = new Map<number, Activity>();
+    for (const a of availableActivities) {
+      map.set(a.id, a);
+    }
+    return map;
+  }, [availableActivities]);
 
   const removeActivity = (id: number) => {
     onActivitiesChange(selectedActivityIds.filter((x) => x !== id));
@@ -47,7 +48,7 @@ export function MomentEditor({
       {/* Selected activity chips */}
       <div className='flex flex-wrap gap-2 mb-3'>
         {selectedActivityIds.map((activityId) => {
-          const activity = allActivitiesMap.get(activityId);
+          const activity = activitiesMap.get(activityId);
           if (!activity) return null;
           return (
             <div

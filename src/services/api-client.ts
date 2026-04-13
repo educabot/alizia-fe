@@ -78,9 +78,15 @@ export function setOnUnauthorized(callback: () => void) {
 // =============================================================================
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const extraHeaders = options?.headers instanceof Headers
+    ? Object.fromEntries(options.headers.entries())
+    : Array.isArray(options?.headers)
+      ? Object.fromEntries(options.headers)
+      : (options?.headers as Record<string, string> | undefined) ?? {};
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...((options?.headers as Record<string, string>) ?? {}),
+    ...extraHeaders,
   };
 
   if (authToken) {
@@ -92,8 +98,8 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
     headers,
   });
 
-  // 204 No Content
-  if (res.status === 204) return undefined as T;
+  // 204 No Content — callers using delete/void endpoints should type T as void
+  if (res.status === 204) return undefined as unknown as T;
 
   // Error handling
   if (!res.ok) {

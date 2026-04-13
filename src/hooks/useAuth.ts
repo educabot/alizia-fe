@@ -13,7 +13,10 @@ import { onboardingApi } from '@/services/api';
  *  - Después de logout, redirect a `/login`.
  */
 export function useAuth() {
-  const { user, isLoading, error, getUserRole } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const error = useAuthStore((s) => s.error);
+  const getUserRole = useAuthStore((s) => s.getUserRole);
   const login = useAuthStore((s) => s.login);
   const logoutStore = useAuthStore((s) => s.logout);
   const navigate = useNavigate();

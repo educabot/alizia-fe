@@ -3,6 +3,7 @@ import { FileText, Users, BarChart3 } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useCoursesQuery, useCourseSubjectsQuery } from '@/hooks/queries/useReferenceQueries';
 import { useCoordinationDocumentsQuery } from '@/hooks/queries/useCoordinationQueries';
+import { DataState } from '@/components/DataState';
 import { useNomenclature } from '@/hooks/useOrgConfig';
 import { DocumentCard } from '@/components/coordination/DocumentCard';
 import { PlanningProgressBar } from '@/components/dashboard/PlanningProgressBar';
@@ -16,7 +17,7 @@ export function CoordinatorHome() {
   const user = useAuthStore((s) => s.user);
   const { data: courses = [] } = useCoursesQuery();
   const { data: courseSubjects = [] } = useCourseSubjectsQuery();
-  const { data: documents = [] } = useCoordinationDocumentsQuery();
+  const { data: documents = [], isLoading: docsLoading, error: docsError } = useCoordinationDocumentsQuery();
   const documentLabel = useNomenclature('coordination_document');
   const documentPluralLabel = useNomenclature('coordination_document_plural');
   const courseLabel = useNomenclature('course');
@@ -59,7 +60,20 @@ export function CoordinatorHome() {
         {/* Left: Documents */}
         <div>
           <h2 className='headline-1-bold text-[#10182B] mb-4'>{documentPluralLabel}</h2>
-          {documents.length > 0 ? (
+          <DataState
+            loading={docsLoading}
+            error={docsError}
+            data={documents}
+            emptyState={
+              <div className='text-center py-12 activity-card-bg rounded-2xl'>
+                <FileText className='w-12 h-12 text-muted-foreground mx-auto mb-4' />
+                <h3 className='headline-1-bold text-foreground mb-2'>Sin documentos</h3>
+                <p className='body-2-regular text-muted-foreground'>
+                  Selecciona un {courseLabel.toLowerCase()} para crear un {documentLabel.toLowerCase()}.
+                </p>
+              </div>
+            }
+          >
             <div className='space-y-3'>
               {documents.map((doc) => (
                 <DocumentCard
@@ -69,15 +83,7 @@ export function CoordinatorHome() {
                 />
               ))}
             </div>
-          ) : (
-            <div className='text-center py-12 activity-card-bg rounded-2xl'>
-              <FileText className='w-12 h-12 text-muted-foreground mx-auto mb-4' />
-              <h3 className='headline-1-bold text-foreground mb-2'>Sin documentos</h3>
-              <p className='body-2-regular text-muted-foreground'>
-                Selecciona un {courseLabel.toLowerCase()} para crear un {documentLabel.toLowerCase()}.
-              </p>
-            </div>
-          )}
+          </DataState>
 
           {/* Course list */}
           <h2 className='headline-1-bold text-[#10182B] mb-4 mt-8'>Mis {coursePluralLabel.toLowerCase()}</h2>

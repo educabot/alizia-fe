@@ -41,11 +41,15 @@ export function ChatPanel({
   const sendMessage = useCallback(
     async (content: string) => {
       const userMsg: ChatMessage = { role: 'user', content: content.trim() };
-      setMessages((prev) => [...prev, userMsg]);
+      // Use functional update to get fresh messages (avoids stale closure)
+      let history: ChatMessage[] = [];
+      setMessages((prev) => {
+        history = [...prev, userMsg];
+        return history;
+      });
       setIsSending(true);
 
       try {
-        const history = [...messages, userMsg];
         const result = await routeChat(entityType, entityId, content.trim(), history);
 
         setMessages((prev) => [...prev, { role: 'assistant', content: result.content }]);
@@ -53,14 +57,13 @@ export function ChatPanel({
         if (result.document_updated && onEntityUpdated) {
           onEntityUpdated();
         }
-      } catch (error) {
-        console.error('Chat error:', error);
+      } catch {
         setMessages((prev) => [...prev, { role: 'assistant', content: 'Lo siento, hubo un error. Intenta de nuevo.' }]);
       } finally {
         setIsSending(false);
       }
     },
-    [entityType, entityId, messages, onEntityUpdated],
+    [entityType, entityId, onEntityUpdated],
   );
 
   return (
